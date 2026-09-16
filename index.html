@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tạm Ngưng</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=LDmcBjehn8ka27oHP_mmFtLIMyxiOU0m0oM-xC-H68LN6Kskd5TxojGyYXsM5sgM237A0X3HAXrHNC1BLemUWH_Y8tRD_iyz0kEmWSjdfaO_q-ImTxKN3Zs8YD-oR4D1iErl_u4zxJbSxXjYOIB3gUAD7UBvbNq7hGnvdltpE0fh1fpzEAUF8PW1ad2LoM6r2743yFiqY3_d2OJxueS3iYx5C20kcplOwPtPiKnrltM-4eJQkEQIy4ATSeanT_92jNK-UiqEWOfdcy2N5IcIuoyjM4neWdmgLoq83UKpyVZaaKwraBEbliU5AJNHfM5O" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jb250cmlidXRpb24udXNlcmNvbnRlbnQuZ29vZ2xlLmNvbS9kb3dubG9hZD9jPUNneGlZWEprWDNOMGIzSmhaMlVTVUJJTmNtVnpjRzl1YzJWZlpHRjBZUm9fQ2pBeE4yRTBNMk13TVRreE1ERTVNakJqTURBd05qVmlPV0k0WVdKbE1ERm1aakE0WlRFNE5UQXdaR0l4TldJMllUTVNDeElIRUphcnRydmZHUmdCJmZpbGVuYW1lPWluZGV4Lmh0bWwmb3BpPTEwMzEzNTA1MA"/><style>
+        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
+        .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
+        .action-btns button { margin-right: 5px; }
+        th { white-space: nowrap; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <h2 class="text-center mb-4 text-primary"><i class="fas fa-building"></i> Danh Sách Công Ty Tạm Ngưng</h2>
+        
+        <div class="row mb-3">
+            <div class="col-md-6 d-flex gap-2 mb-2">
+                <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm Mới</button>
+                <button class="btn btn-info text-white" onclick="exportData()"><i class="fas fa-download"></i> Backup Data (JSON)</button>
+                <label class="btn btn-warning mb-0 text-white">
+                    <i class="fas fa-upload"></i> Import Data
+                    <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
+                </label>
+                <button class="btn btn-danger" onclick="clearData()"><i class="fas fa-trash-alt"></i> Xóa Hết (Reset)</button>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
+            </div>
+        </div>
+
+        <div class="table-container table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>STT</th>
+                        <th>ID</th>
+                        <th>Box</th>
+                        <th>Mã Số Thuế</th>
+                        <th>Tên Công Ty</th>
+                        <th>Khách</th>
+                        <th>SĐT</th>
+                        <th>Ngày</th>
+                        <th>Phí</th>
+                        <th>Ghi Chú</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be loaded here via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form (Add/Edit) -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Thêm Mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="dataForm">
+                <input type="hidden" id="editIndex" value="-1">
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">STT</label>
+                        <input type="text" class="form-control" id="stt">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">ID</label>
+                        <input type="text" class="form-control" id="id">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">Box</label>
+                        <input type="text" class="form-control" id="box">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Mã Số Thuế <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="mst" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Tên Công Ty <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="ten_cty" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Khách</label>
+                        <input type="text" class="form-control" id="khach">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">SĐT</label>
+                        <input type="text" class="form-control" id="sdt">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Ngày</label>
+                        <input type="text" class="form-control" id="ngay" placeholder="YYYY-MM-DD">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Phí</label>
+                        <input type="text" class="form-control" id="phi">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Ghi Chú</label>
+                        <input type="text" class="form-control" id="ghichu">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Trạng Thái (Tạm Ngưng)</label>
+                    <input type="text" class="form-control" id="trangthai">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" onclick="saveForm()">Lưu Thông Tin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // INIT DATA FROM EXCEL
+        const defaultData = [{"stt": "1", "id": "", "box": "", "mst": "0310773352", "khach": "A Chánh", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN THƯƠNG MẠI DỊCH VỤ VŨ HỒ NAM", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "2", "id": "94", "box": "2", "mst": "0316458068", "khach": "MrBình", "sdt": "0942582345", "ten_cty": "CÔNG TY CỔ PHẦN ĐẦU TƯ PHÁT TRIỂN PHONG THỦY NHẤT NGUYÊN", "ngay": "2022-10-25", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "3", "id": "37", "box": "2", "mst": "0303284544", "khach": "MrBình", "sdt": "0942582345", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ HOÀNG ANH HUY-5000", "ngay": "2025-02-10", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "4", "id": "168", "box": "2", "mst": "0314224924", "khach": "MrChiến", "sdt": "913628535", "ten_cty": "CÔNG TY TNHH CƠ ĐIỆN LẠNH LONG PHÁT", "ngay": "2024-07-10", "phi": "2500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "5", "id": "201", "box": "3", "mst": "0317549021", "khach": "MrCường", "sdt": "909689393", "ten_cty": "CÔNG TY TNHH TM DV SX ĐẠI VIỆT HOÀNG", "ngay": "2025-12-22", "phi": "1500", "ghichu": "koPs", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "6", "id": "15", "box": "2", "mst": "3401137825", "khach": "MrĐằng", "sdt": "0909649936", "ten_cty": "CÔNG TY CP XÂY DỰNG HOÀNG NGUYÊN 96", "ngay": "2022-01-27", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "7", "id": "54", "box": "3", "mst": "0315378589", "khach": "MrĐạt", "sdt": "0902702889", "ten_cty": "CÔNG TY TNHH THỰC PHẨM XANH OHD", "ngay": "2025-05-29", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "9", "id": "115", "box": "3", "mst": "0314610574", "khach": "MrGiang", "sdt": "918842615", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ LẠC KIÊN", "ngay": "2025-03-23", "phi": "1500", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "10", "id": "12", "box": "3", "mst": "0314879102", "khach": "MrHoàng", "sdt": "0918281562", "ten_cty": "CÔNG TY TNHH PHẦN MỀM QUANG LONG", "ngay": "2024-01-22", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "11", "id": "180", "box": "2", "mst": "1102036864", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY TNHH LEE MART", "ngay": "2025-12-22", "phi": "1000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "12", "id": "177", "box": "2", "mst": "0317964003", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY TNHH NHÀ SÁCH NHƯ Ý", "ngay": "2027-02-03", "phi": "1000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "13", "id": "", "box": "", "mst": "0317647678", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY CỔ PHẦN LEE KHANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "14", "id": "116", "box": "1", "mst": "0316280434", "khach": "MrNghĩa", "sdt": "0906797372", "ten_cty": "CÔNG TY TNHH ĐẦU TƯ XÂY DỰNG VÀ THƯƠNG MẠI TRUNG NGHĨA", "ngay": "2025-12-22", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "15", "id": "82", "box": "3", "mst": "0315977487", "khach": "MrNhã", "sdt": "0905185832", "ten_cty": "CÔNG TY TNHH GIẢI PHÁP HỆ THỐNG NI LAVIE", "ngay": "2024-03-06", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "16", "id": "167", "box": "3", "mst": "0317843619", "khach": "MrNhã", "sdt": "905185832", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ 2T HOLDING", "ngay": "2029-01-24", "phi": "1500", "ghichu": "kieu", "trangthai": "Tạm ngưng 1/3/26-31/12/26"}, {"stt": "17", "id": "", "box": "", "mst": "0315767680", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH KINH DOANH THƯƠNG MẠI VINH NGUYỄN", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "18", "id": "", "box": "", "mst": "0315985551", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI VNV", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "19", "id": "", "box": "", "mst": "0316229614", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH XNK LDV", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "20", "id": "", "box": "", "mst": "0316621412", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI KL VINA", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "21", "id": "", "box": "", "mst": "0316362006", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI PVE", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "22", "id": "", "box": "", "mst": "0316827519", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI ALD", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "23", "id": "", "box": "", "mst": "0316966181", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI NXK", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "24", "id": "146", "box": "1", "mst": "0317400857", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH XNK LIÊN Á", "ngay": "2025-07-31", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "25", "id": "164", "box": "2", "mst": "0317665525", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH THIẾT BỊ ĐỨC THỊNH", "ngay": "2026-02-08", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "26", "id": "204", "box": "2", "mst": "0318616344", "khach": "MrQuý", "sdt": "", "ten_cty": "CÔNG TY TNHH DỊCH VỤ ĐẦU TƯ XUẤT NHẬP KHẨU PHÚ HƯNG", "ngay": "2028-04-01", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "27", "id": "140", "box": "2", "mst": "0317311011", "khach": "MrSơn", "sdt": "983388993", "ten_cty": "CÔNG TY TNHH KẾT NỐI NGỌC LỤC BẢO", "ngay": "2025-05-31", "phi": "3000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "28", "id": "13", "box": "1", "mst": "0315105863", "khach": "MrTrưởng", "sdt": "0919288168", "ten_cty": "CÔNG TY TNHH TRUYỀN HÌNH KVTV", "ngay": "2024-12-05", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "29", "id": "213", "box": "3", "mst": "3703320538", "khach": "MrVương", "sdt": "", "ten_cty": "CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI DƯƠNG MINH", "ngay": "", "phi": "3000", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "30", "id": "47", "box": "1", "mst": "0314772141", "khach": "MsHoa", "sdt": "0779654111", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI ẮC QUY THÀNH CÔNG", "ngay": "2024-01-19", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "31", "id": "138", "box": "", "mst": "0315051054", "khach": "MsLam", "sdt": "767102609", "ten_cty": "CÔNG TY TNHH GTS GROUP", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "32", "id": "33", "box": "3", "mst": "0313497968", "khach": "MsMinh", "sdt": "0932132737", "ten_cty": "CÔNG TY TNHH TM THIẾT BỊ TRUYỀN HÌNH - VIỄN THÔNG MINH QUÂN-2000", "ngay": "2022-10-25", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "33", "id": "125", "box": "3", "mst": "0316914514", "khach": "MsMinh", "sdt": "0937697860", "ten_cty": "CÔNG TY TNHH CƠ KHÍ XÂY DỰNG ĐỒNG LÂM", "ngay": "2024-06-24", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "34", "id": "48", "box": "1", "mst": "0314069531", "khach": "MsNhung", "sdt": "", "ten_cty": "CÔNG TY TNHH VETACO", "ngay": "2024-01-19", "phi": "4500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "35", "id": "", "box": "", "mst": "0317766386", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH TENNIS HUỲNH KHANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "36", "id": "", "box": "", "mst": "0311894744", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN THƯƠNG MẠI VÀ SẢN XUẤT NGHIÊM GIA", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "37", "id": "", "box": "", "mst": "0305363262", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH DIỆU TƯỜNG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "38", "id": "", "box": "", "mst": "0317527500", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH PHƯƠNG TRỌNG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "39", "id": "", "box": "", "mst": "0314487786", "khach": "VlHUe", "sdt": "", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI SẢN XUẤT HJ", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "40", "id": "", "box": "", "mst": "0316321345", "khach": "VlHường", "sdt": "", "ten_cty": "CÔNG TY TNHH DV - TM HOÀNG HUY BẢO", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "41", "id": "", "box": "", "mst": "0311217421", "khach": "VlHường", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN SẢN XUẤT THƯƠNG MẠI XUẤT NHẬP KHẨU KHẢI LIÊN PHÁT", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "42", "id": "", "box": "", "mst": "0315332376", "khach": "VlThuy", "sdt": "", "ten_cty": "CÔNG TY CỔ PHẦN EZO VIỆT NAM", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "43", "id": "", "box": "", "mst": "0311761529", "khach": "VlTrung", "sdt": "", "ten_cty": "CÔNG TY TNHH VINASUIT", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "44", "id": "", "box": "", "mst": "0313231830", "khach": "Zalo Le Tuyen", "sdt": "", "ten_cty": "CÔNG TY TNHH PHÁT TRIỂN THƯƠNG MẠI DỊCH VỤ QUẢNG CÁO THE FUTURE", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "45", "id": "", "box": "", "mst": "0312228899", "khach": "VlTrung", "sdt": "", "ten_cty": "CÔNG TY CỔ PHẦN THƯƠNG MẠI DỊCH VỤ XÂY DỰNG MTC", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "46", "id": "", "box": "", "mst": "3703103773", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH XINHONG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "47", "id": "49", "box": "1", "mst": "0310217940", "khach": "MsNy", "sdt": "0907333379", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI - DỊCH VỤ THÉP ĐỨC THỊNH", "ngay": "2026-06-27", "phi": "3000", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "48", "id": "", "box": "", "mst": "3703117173", "khach": "Zalo Ánh Ngọc _ 3703117173", "sdt": "", "ten_cty": "CÔNG TY TNHH THIẾT BỊ ĐIỆN VÀ XỬ LÝ NƯỚC NĂNG LƯỢNG XANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "49", "id": "85", "box": "3", "mst": "0316259111", "khach": "MsPhượng", "sdt": "0913639418", "ten_cty": "CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI ZERA VIỆT NAM", "ngay": "2026-08-13", "phi": "3600", "ghichu": "kieu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "50", "id": "120", "box": "2", "mst": "0315754561", "khach": "MrNam", "sdt": "0933480386", "ten_cty": "CÔNG TY TNHH SAGOHOUSE.", "ngay": "2026-07-20", "phi": "500", "ghichu": "koPS", "trangthai": "Tam ngung 15/5/26-31/12/26"}, {"stt": "51", "id": "226", "box": "", "mst": "0319182717", "khach": "MrLợi", "sdt": "938041408", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI THỚI AN ĐẠI PHÁT", "ngay": "2028-10-09", "phi": "1000", "ghichu": "", "trangthai": "Tam ngung 15/5/26-31/12/26"}, {"stt": "52", "id": "184", "box": "2", "mst": "1102037307", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH ĐẦU TƯ THƯƠNG MẠI PT", "ngay": "2027-02-24", "phi": "1500", "ghichu": "tu", "trangthai": "Tam ngung 03/26-31/12/26"}, {"stt": "53", "id": "196", "box": "2", "mst": "0317545965", "khach": "Mr", "sdt": "", "ten_cty": "CÔNG TY TNHH PHÒNG KHÁM ĐA KHOA Y DƯỢC THÀNH PHỐ HỒ CHÍ MINH", "ngay": "2028-07-23", "phi": "3000", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "54", "id": "170", "box": "2", "mst": "0317861248", "khach": "MrHoàng", "sdt": "961721110", "ten_cty": "CÔNG TY TNHH CENTER OF MYLY VIET NAM", "ngay": "2026-06-02", "phi": "1000", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "55", "id": "175", "box": "2", "mst": "3901304785-001", "khach": "MsLinh", "sdt": "977996932", "ten_cty": "CHI NHÁNH CÔNG TY TNHH THƯƠNG MẠI - SẢN XUẤT KINH DOANH BÁNH TÉT QUANG KIM", "ngay": "2027-01-21", "phi": "", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "56", "id": "106", "box": "3", "mst": "3901304785", "khach": "MsLinh", "sdt": "0977996932", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI - SẢN XUẤT KINH DOANH BÁNH TÉT QUANG KIM", "ngay": "2028-04-12", "phi": "2000", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "57", "id": "211", "box": "2", "mst": "0318876247", "khach": "MrĐạt", "sdt": "762937561", "ten_cty": "CÔNG TY TNHH FASTDAT MOBILE", "ngay": "2028-03-24", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 01/01/27-31/12/27"}];
+
+        let appData = [];
+        let modalInstance;
+
+        // On Load
+        window.onload = function() {
+            modalInstance = new bootstrap.Modal(document.getElementById('formModal'));
+            loadData();
+        };
+
+        // Load data from LocalStorage or default
+        function loadData() {
+            const storedData = localStorage.getItem('tamngungData');
+            if (storedData) {
+                appData = JSON.parse(storedData);
+            } else {
+                appData = [...defaultData];
+                saveToLocalStorage();
+            }
+            renderTable();
+        }
+
+        // Save to LocalStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('tamngungData', JSON.stringify(appData));
+        }
+
+        // Render Table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            appData.forEach((row, index) => {
+                // Filter logic
+                const searchString = Object.values(row).join(' ').toLowerCase();
+                if (searchTerm && !searchString.includes(searchTerm)) {
+                    return; // Skip if not matched
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.stt || ''}</td>
+                    <td>${row.id || ''}</td>
+                    <td>${row.box || ''}</td>
+                    <td><strong>${row.mst || ''}</strong></td>
+                    <td>${row.ten_cty || ''}</td>
+                    <td>${row.khach || ''}</td>
+                    <td>${row.sdt || ''}</td>
+                    <td>${row.ngay || ''}</td>
+                    <td>${row.phi || ''}</td>
+                    <td>${row.ghichu || ''}</td>
+                    <td><span class="badge bg-warning text-dark">${row.trangthai || ''}</span></td>
+                    <td class="action-btns">
+                        <button class="btn btn-sm btn-primary" onclick="editData(${index})" title="Sửa"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteData(${index})" title="Xóa"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Open Modal for Add
+        function openModal() {
+            document.getElementById('dataForm').reset();
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('modalTitle').innerText = "Thêm Công Ty Mới";
+            modalInstance.show();
+        }
+
+        // Open Modal for Edit
+        function editData(index) {
+            const row = appData[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').innerText = "Cập Nhật Thông Tin";
+            
+            document.getElementById('stt').value = row.stt || '';
+            document.getElementById('id').value = row.id || '';
+            document.getElementById('box').value = row.box || '';
+            document.getElementById('mst').value = row.mst || '';
+            document.getElementById('ten_cty').value = row.ten_cty || '';
+            document.getElementById('khach').value = row.khach || '';
+            document.getElementById('sdt').value = row.sdt || '';
+            document.getElementById('ngay').value = row.ngay || '';
+            document.getElementById('phi').value = row.phi || '';
+            document.getElementById('ghichu').value = row.ghichu || '';
+            document.getElementById('trangthai').value = row.trangthai || '';
+            
+            modalInstance.show();
+        }
+
+        // Save Form (Add or Edit)
+        function saveForm() {
+            const mst = document.getElementById('mst').value.trim();
+            const ten_cty = document.getElementById('ten_cty').value.trim();
+            
+            if(!mst || !ten_cty) {
+                alert("Vui lòng nhập Mã Số Thuế và Tên Công Ty!");
+                return;
+            }
+
+            const newData = {
+                stt: document.getElementById('stt').value,
+                id: document.getElementById('id').value,
+                box: document.getElementById('box').value,
+                mst: mst,
+                ten_cty: ten_cty,
+                khach: document.getElementById('khach').value,
+                sdt: document.getElementById('sdt').value,
+                ngay: document.getElementById('ngay').value,
+                phi: document.getElementById('phi').value,
+                ghichu: document.getElementById('ghichu').value,
+                trangthai: document.getElementById('trangthai').value
+            };
+
+            const editIndex = document.getElementById('editIndex').value;
+            
+            if (editIndex == -1) {
+                // Add new
+                appData.push(newData);
+            } else {
+                // Update
+                appData[editIndex] = newData;
+            }
+
+            saveToLocalStorage();
+            renderTable();
+            modalInstance.hide();
+        }
+
+        // Delete Data
+        function deleteData(index) {
+            if (confirm("Bạn có chắc chắn muốn xóa dòng này?")) {
+                appData.splice(index, 1);
+                saveToLocalStorage();
+                renderTable();
+            }
+        }
+        
+        // Clear all data
+        function clearData() {
+            if (confirm("CẢNH BÁO: Xóa toàn bộ dữ liệu đang lưu trên trình duyệt? Hãy đảm bảo bạn đã Backup!")) {
+                appData = [];
+                saveToLocalStorage();
+                renderTable();
+            }
+        }
+
+        // Export Backup to JSON
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_tamngung_${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import from JSON
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        if (confirm("Bạn muốn GHI ĐÈ dữ liệu hiện tại (OK) hay THÊM VÀO (Cancel)?")) {
+                            appData = imported;
+                        } else {
+                            appData = appData.concat(imported);
+                        }
+                        saveToLocalStorage();
+                        renderTable();
+                        alert("Import thành công!");
+                    } else {
+                        alert("File không đúng định dạng mảng JSON!");
+                    }
+                } catch (error) {
+                    alert("Lỗi đọc file JSON: " + error.message);
+                }
+                // Reset file input
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
