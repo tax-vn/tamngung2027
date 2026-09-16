@@ -7,7 +7,7 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=qzg4_jDGPN-f7lA6yzNHZszdagMsby-jNe093UzxPHf5SF6Zpt5zfctZQ_FTSanUmrlsRYfLd42AWmxcy4HHPjGT0XYFJW4SlzFddiHbuYorgRjbovMNax6837eEUtSgD-IIBKEFc2IMKUqQ7y3ZkntWKFy8M54ubjk2QoehFddpKVQwMSKqi36UJMoygGascEOvM_fyccBP8HVPD62ZU4kMEBjo9c6ZHTPP2_o8asljHPYE44UnchSidRhVwNPIwAYWEougAcfwzrGal96oL1ZctB1RB4tDtD8m0dOx5kiDRbtVLv8eAl6BcHa21gD1" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jb250cmlidXRpb24udXNlcmNvbnRlbnQuZ29vZ2xlLmNvbS9kb3dubG9hZD9jPUNneGlZWEprWDNOMGIzSmhaMlVTVUJJTmNtVnpjRzl1YzJWZlpHRjBZUm9fQ2pBeU0yWXhPVFZoTW1Sa1lUQmhPR014TURBd05qVmlPV000Wm1Rek1URXlPREF5WVRCbFltUmpNVE15TmpjNE5HUVNDeElIRUphcnRydmZHUmdCJmZpbGVuYW1lPWluZGV4XzMuaHRtbCZvcGk9MTAzMTM1MDUw"/><style>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=xNoHtUTI51PQ65yzcUNkNxcuZ2XJ37oB35cXhnwm_xPy0pSU-luKCY1rsHfOMthMqmgzsDfBuVFldJZimxLaI3EgSxeyo9kOHlYt9PuBTt4hiwvBQR1pnhWJxwfMU8G2RSF8J77t2oKB0Qp1K_RIXy4i3hewMT8etnlxl5s_LFCeYzlrV5UV_6vTPUH6g8kY5Bx5yf2t77JTQ6Yl4-UEakXOdzaDDQu5sE5P_NPqQcg8jFWf60WpNtJR4sE-Zzp4K2Ckxbu0c0_CN1cWTt_9vDEuYNjgloCDMB_2bElSxwtn97T3cWawkRedvtkf4ebv" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jb250cmlidXRpb24udXNlcmNvbnRlbnQuZ29vZ2xlLmNvbS9kb3dubG9hZD9jPUNneGlZWEprWDNOMGIzSmhaMlVTVUJJTmNtVnpjRzl1YzJWZlpHRjBZUm9fQ2pCbE5EUXpOVGhpTURFMVpUQXpOemc0TURBd05qVmlPV05oTVRZMk9ESm1OakE0WlRFNVlUYzBPV0l5T1Rka1pEQVNDeElIRUphcnRydmZHUmdCJmZpbGVuYW1lPWluZGV4XzQuaHRtbCZvcGk9MTAzMTM1MDUw"/><style>
         body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
         .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
         .action-btns button { margin-right: 5px; }
@@ -47,7 +47,6 @@
                     <i class="fas fa-upload"></i> Import & Đẩy Lên Cloud
                     <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
                 </label>
-                <button class="btn btn-danger" onclick="importDefaultData()"><i class="fas fa-file-excel"></i> Load Data Excel Gốc</button>
             </div>
             <div class="col-md-4">
                 <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
@@ -200,9 +199,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Dữ liệu gốc từ file Excel bạn đã tải lên (56 dòng)
-        const SEED_DATA = [{"stt": "1", "id": "", "box": "", "mst": "0310773352", "khach": "A Chánh", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN THƯƠNG MẠI DỊCH VỤ VŨ HỒ NAM", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "2", "id": "94", "box": "2", "mst": "0316458068", "khach": "MrBình", "sdt": "0942582345", "ten_cty": "CÔNG TY CỔ PHẦN ĐẦU TƯ PHÁT TRIỂN PHONG THỦY NHẤT NGUYÊN", "ngay": "2022-10-25", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "3", "id": "37", "box": "2", "mst": "0303284544", "khach": "MrBình", "sdt": "0942582345", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ HOÀNG ANH HUY-5000", "ngay": "2025-02-10", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "4", "id": "168", "box": "2", "mst": "0314224924", "khach": "MrChiến", "sdt": "913628535", "ten_cty": "CÔNG TY TNHH CƠ ĐIỆN LẠNH LONG PHÁT", "ngay": "2024-07-10", "phi": "2500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "5", "id": "201", "box": "3", "mst": "0317549021", "khach": "MrCường", "sdt": "909689393", "ten_cty": "CÔNG TY TNHH TM DV SX ĐẠI VIỆT HOÀNG", "ngay": "2025-12-22", "phi": "1500", "ghichu": "koPs", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "6", "id": "15", "box": "2", "mst": "3401137825", "khach": "MrĐằng", "sdt": "0909649936", "ten_cty": "CÔNG TY CP XÂY DỰNG HOÀNG NGUYÊN 96", "ngay": "2022-01-27", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "7", "id": "54", "box": "3", "mst": "0315378589", "khach": "MrĐạt", "sdt": "0902702889", "ten_cty": "CÔNG TY TNHH THỰC PHẨM XANH OHD", "ngay": "2025-05-29", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "9", "id": "115", "box": "3", "mst": "0314610574", "khach": "MrGiang", "sdt": "918842615", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ LẠC KIÊN", "ngay": "2025-03-23", "phi": "1500", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "10", "id": "12", "box": "3", "mst": "0314879102", "khach": "MrHoàng", "sdt": "0918281562", "ten_cty": "CÔNG TY TNHH PHẦN MỀM QUANG LONG", "ngay": "2024-01-22", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "11", "id": "180", "box": "2", "mst": "1102036864", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY TNHH LEE MART", "ngay": "2025-12-22", "phi": "1000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "12", "id": "177", "box": "2", "mst": "0317964003", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY TNHH NHÀ SÁCH NHƯ Ý", "ngay": "2027-02-03", "phi": "1000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "13", "id": "", "box": "", "mst": "0317647678", "khach": "MrKhánh", "sdt": "909912911", "ten_cty": "CÔNG TY CỔ PHẦN LEE KHANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "14", "id": "116", "box": "1", "mst": "0316280434", "khach": "MrNghĩa", "sdt": "0906797372", "ten_cty": "CÔNG TY TNHH ĐẦU TƯ XÂY DỰNG VÀ THƯƠNG MẠI TRUNG NGHĨA", "ngay": "2025-12-22", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "15", "id": "82", "box": "3", "mst": "0315977487", "khach": "MrNhã", "sdt": "0905185832", "ten_cty": "CÔNG TY TNHH GIẢI PHÁP HỆ THỐNG NI LAVIE", "ngay": "2024-03-06", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "16", "id": "167", "box": "3", "mst": "0317843619", "khach": "MrNhã", "sdt": "905185832", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ 2T HOLDING", "ngay": "2029-01-24", "phi": "1500", "ghichu": "kieu", "trangthai": "Tạm ngưng 1/3/26-31/12/26"}, {"stt": "17", "id": "", "box": "", "mst": "0315767680", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH KINH DOANH THƯƠNG MẠI VINH NGUYỄN", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "18", "id": "", "box": "", "mst": "0315985551", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI VNV", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "19", "id": "", "box": "", "mst": "0316229614", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH XNK LDV", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "20", "id": "", "box": "", "mst": "0316621412", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI KL VINA", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "21", "id": "", "box": "", "mst": "0316362006", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI PVE", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "22", "id": "", "box": "", "mst": "0316827519", "khach": "MrPhương", "sdt": "A Phương", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI ALD", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "23", "id": "", "box": "", "mst": "0316966181", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI NXK", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "24", "id": "146", "box": "1", "mst": "0317400857", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH XNK LIÊN Á", "ngay": "2025-07-31", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "25", "id": "164", "box": "2", "mst": "0317665525", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH THIẾT BỊ ĐỨC THỊNH", "ngay": "2026-02-08", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "26", "id": "204", "box": "2", "mst": "0318616344", "khach": "MrQuý", "sdt": "", "ten_cty": "CÔNG TY TNHH DỊCH VỤ ĐẦU TƯ XUẤT NHẬP KHẨU PHÚ HƯNG", "ngay": "2028-04-01", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "27", "id": "140", "box": "2", "mst": "0317311011", "khach": "MrSơn", "sdt": "983388993", "ten_cty": "CÔNG TY TNHH KẾT NỐI NGỌC LỤC BẢO", "ngay": "2025-05-31", "phi": "3000", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "28", "id": "13", "box": "1", "mst": "0315105863", "khach": "MrTrưởng", "sdt": "0919288168", "ten_cty": "CÔNG TY TNHH TRUYỀN HÌNH KVTV", "ngay": "2024-12-05", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "29", "id": "213", "box": "3", "mst": "3703320538", "khach": "MrVương", "sdt": "", "ten_cty": "CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI DƯƠNG MINH", "ngay": "", "phi": "3000", "ghichu": "koPS", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "30", "id": "47", "box": "1", "mst": "0314772141", "khach": "MsHoa", "sdt": "0779654111", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI ẮC QUY THÀNH CÔNG", "ngay": "2024-01-19", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "31", "id": "138", "box": "", "mst": "0315051054", "khach": "MsLam", "sdt": "767102609", "ten_cty": "CÔNG TY TNHH GTS GROUP", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "32", "id": "33", "box": "3", "mst": "0313497968", "khach": "MsMinh", "sdt": "0932132737", "ten_cty": "CÔNG TY TNHH TM THIẾT BỊ TRUYỀN HÌNH - VIỄN THÔNG MINH QUÂN-2000", "ngay": "2022-10-25", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "33", "id": "125", "box": "3", "mst": "0316914514", "khach": "MsMinh", "sdt": "0937697860", "ten_cty": "CÔNG TY TNHH CƠ KHÍ XÂY DỰNG ĐỒNG LÂM", "ngay": "2024-06-24", "phi": "1500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "34", "id": "48", "box": "1", "mst": "0314069531", "khach": "MsNhung", "sdt": "", "ten_cty": "CÔNG TY TNHH VETACO", "ngay": "2024-01-19", "phi": "4500", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "35", "id": "", "box": "", "mst": "0317766386", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH TENNIS HUỲNH KHANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "36", "id": "", "box": "", "mst": "0311894744", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN THƯƠNG MẠI VÀ SẢN XUẤT NGHIÊM GIA", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "37", "id": "", "box": "", "mst": "0305363262", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH DIỆU TƯỜNG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "38", "id": "", "box": "", "mst": "0317527500", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH PHƯƠNG TRỌNG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "39", "id": "", "box": "", "mst": "0314487786", "khach": "VlHUe", "sdt": "", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI SẢN XUẤT HJ", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "40", "id": "", "box": "", "mst": "0316321345", "khach": "VlHường", "sdt": "", "ten_cty": "CÔNG TY TNHH DV - TM HOÀNG HUY BẢO", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "41", "id": "", "box": "", "mst": "0311217421", "khach": "VlHường", "sdt": "", "ten_cty": "CÔNG TY TNHH MỘT THÀNH VIÊN SẢN XUẤT THƯƠNG MẠI XUẤT NHẬP KHẨU KHẢI LIÊN PHÁT", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "42", "id": "", "box": "", "mst": "0315332376", "khach": "VlThuy", "sdt": "", "ten_cty": "CÔNG TY CỔ PHẦN EZO VIỆT NAM", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "43", "id": "", "box": "", "mst": "0311761529", "khach": "VlTrung", "sdt": "", "ten_cty": "CÔNG TY TNHH VINASUIT", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "44", "id": "", "box": "", "mst": "0313231830", "khach": "Zalo Le Tuyen", "sdt": "", "ten_cty": "CÔNG TY TNHH PHÁT TRIỂN THƯƠNG MẠI DỊCH VỤ QUẢNG CÁO THE FUTURE", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "45", "id": "", "box": "", "mst": "0312228899", "khach": "VlTrung", "sdt": "", "ten_cty": "CÔNG TY CỔ PHẦN THƯƠNG MẠI DỊCH VỤ XÂY DỰNG MTC", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "46", "id": "", "box": "", "mst": "3703103773", "khach": "VlChuLinh", "sdt": "", "ten_cty": "CÔNG TY TNHH XINHONG", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "47", "id": "49", "box": "1", "mst": "0310217940", "khach": "MsNy", "sdt": "0907333379", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI - DỊCH VỤ THÉP ĐỨC THỊNH", "ngay": "2026-06-27", "phi": "3000", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "48", "id": "", "box": "", "mst": "3703117173", "khach": "Zalo Ánh Ngọc _ 3703117173", "sdt": "", "ten_cty": "CÔNG TY TNHH THIẾT BỊ ĐIỆN VÀ XỬ LÝ NƯỚC NĂNG LƯỢNG XANH", "ngay": "", "phi": "", "ghichu": "", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "49", "id": "85", "box": "3", "mst": "0316259111", "khach": "MsPhượng", "sdt": "0913639418", "ten_cty": "CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI ZERA VIỆT NAM", "ngay": "2026-08-13", "phi": "3600", "ghichu": "kieu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "50", "id": "120", "box": "2", "mst": "0315754561", "khach": "MrNam", "sdt": "0933480386", "ten_cty": "CÔNG TY TNHH SAGOHOUSE.", "ngay": "2026-07-20", "phi": "500", "ghichu": "koPS", "trangthai": "Tam ngung 15/5/26-31/12/26"}, {"stt": "51", "id": "226", "box": "", "mst": "0319182717", "khach": "MrLợi", "sdt": "938041408", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI THỚI AN ĐẠI PHÁT", "ngay": "2028-10-09", "phi": "1000", "ghichu": "", "trangthai": "Tam ngung 15/5/26-31/12/26"}, {"stt": "52", "id": "184", "box": "2", "mst": "1102037307", "khach": "MrPhương", "sdt": "908537257", "ten_cty": "CÔNG TY TNHH ĐẦU TƯ THƯƠNG MẠI PT", "ngay": "2027-02-24", "phi": "1500", "ghichu": "tu", "trangthai": "Tam ngung 03/26-31/12/26"}, {"stt": "53", "id": "196", "box": "2", "mst": "0317545965", "khach": "Mr", "sdt": "", "ten_cty": "CÔNG TY TNHH PHÒNG KHÁM ĐA KHOA Y DƯỢC THÀNH PHỐ HỒ CHÍ MINH", "ngay": "2028-07-23", "phi": "3000", "ghichu": "tu", "trangthai": "Tạm ngưng 1/1/26-31/12/26"}, {"stt": "54", "id": "170", "box": "2", "mst": "0317861248", "khach": "MrHoàng", "sdt": "961721110", "ten_cty": "CÔNG TY TNHH CENTER OF MYLY VIET NAM", "ngay": "2026-06-02", "phi": "1000", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "55", "id": "175", "box": "2", "mst": "3901304785-001", "khach": "MsLinh", "sdt": "977996932", "ten_cty": "CHI NHÁNH CÔNG TY TNHH THƯƠNG MẠI - SẢN XUẤT KINH DOANH BÁNH TÉT QUANG KIM", "ngay": "2027-01-21", "phi": "", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "56", "id": "106", "box": "3", "mst": "3901304785", "khach": "MsLinh", "sdt": "0977996932", "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI - SẢN XUẤT KINH DOANH BÁNH TÉT QUANG KIM", "ngay": "2028-04-12", "phi": "2000", "ghichu": "koPS", "trangthai": "Tạm ngưng 20/6/26-31/12/26"}, {"stt": "57", "id": "211", "box": "2", "mst": "0318876247", "khach": "MrĐạt", "sdt": "762937561", "ten_cty": "CÔNG TY TNHH FASTDAT MOBILE", "ngay": "2028-03-24", "phi": "1500", "ghichu": "koPS", "trangthai": "Tạm ngưng 01/01/27-31/12/27"}];
-
         let appData = [];
         let formModal, configModal;
         
@@ -224,7 +220,6 @@
                 fetchDataFromGithub();
             } else {
                 setStatus("Chưa cấu hình GitHub. Vui lòng cài đặt.", 'error');
-                appData = [...SEED_DATA];
                 renderTable();
             }
         };
@@ -300,14 +295,14 @@
                 });
 
                 if (response.status === 404) {
-                    const confirmCreate = confirm("File data.json chưa tồn tại trên Github! Bạn có muốn tạo nó với DỮ LIỆU TỪ EXCEL GỐC không?");
+                    const confirmCreate = confirm("File data.json chưa tồn tại trên Github! Bạn có muốn tạo file trống ngay bây giờ không?");
                     if (confirmCreate) {
-                        appData = [...SEED_DATA];
-                        await pushDataToGithub("Khởi tạo dữ liệu từ file Excel gốc", true);
+                        appData = [];
+                        await pushDataToGithub("Khởi tạo file data.json", true);
                     } else {
                         hideLoading();
                         setStatus("Lỗi: Không tìm thấy file data.json", 'error');
-                        renderTable(); // render empty
+                        renderTable();
                     }
                     return;
                 }
@@ -323,9 +318,8 @@
                 
                 const parsedData = JSON.parse(decodedText);
                 
-                // Cảnh báo nếu file trên github rỗng
                 if(Array.isArray(parsedData) && parsedData.length === 0) {
-                    setStatus("File trên Cloud đang rỗng. Hãy dùng nút 'Import & Đẩy Lên Cloud' hoặc 'Load Data Excel Gốc'.", 'error');
+                    setStatus("File trên Cloud đang rỗng. Hãy dùng nút 'Import & Đẩy Lên Cloud'.", 'error');
                     appData = [];
                 } else {
                     appData = parsedData;
@@ -377,7 +371,6 @@
                         throw new Error("Xung đột phiên bản! Có người khác vừa cập nhật. Hãy 'Tải Lại Cloud' trước.");
                     }
                     if(response.status === 422) {
-                        // Bị mất SHA do một nguyên nhân nào đó, fix nhanh bằng cách lấy lại sha mới nhất
                         throw new Error("Lỗi SHA (Mã 422). Hãy bấm 'Tải Lại Cloud' để lấy SHA mới nhất rồi thử lại.");
                     }
                     throw new Error(`Lỗi cập nhật GitHub (Mã lỗi: ${response.status})`);
@@ -442,19 +435,6 @@
             reader.readAsText(file);
         }
 
-        // LOAD EXCEL GỐC
-        async function importDefaultData() {
-             if (!ghConfig.token) {
-                alert("Vui lòng cấu hình GitHub trước!");
-                return;
-            }
-            if(confirm("Hành động này sẽ tải lại 56 dòng dữ liệu gốc từ file Excel ban đầu và GHI ĐÈ lên Cloud. Bạn có chắc chắn?")) {
-                appData = [...SEED_DATA];
-                renderTable();
-                await pushDataToGithub("Khôi phục dữ liệu từ Excel gốc");
-            }
-        }
-
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -462,7 +442,7 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             if(appData.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import hoặc Load Data Excel Gốc.</td></tr>';
+                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
                  return;
             }
 
