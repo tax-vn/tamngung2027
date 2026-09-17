@@ -7,7 +7,7 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=xNoHtUTI51PQ65yzcUNkNxcuZ2XJ37oB35cXhnwm_xPy0pSU-luKCY1rsHfOMthMqmgzsDfBuVFldJZimxLaI3EgSxeyo9kOHlYt9PuBTt4hiwvBQR1pnhWJxwfMU8G2RSF8J77t2oKB0Qp1K_RIXy4i3hewMT8etnlxl5s_LFCeYzlrV5UV_6vTPUH6g8kY5Bx5yf2t77JTQ6Yl4-UEakXOdzaDDQu5sE5P_NPqQcg8jFWf60WpNtJR4sE-Zzp4K2Ckxbu0c0_CN1cWTt_9vDEuYNjgloCDMB_2bElSxwtn97T3cWawkRedvtkf4ebv" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jb250cmlidXRpb24udXNlcmNvbnRlbnQuZ29vZ2xlLmNvbS9kb3dubG9hZD9jPUNneGlZWEprWDNOMGIzSmhaMlVTVUJJTmNtVnpjRzl1YzJWZlpHRjBZUm9fQ2pCbE5EUXpOVGhpTURFMVpUQXpOemc0TURBd05qVmlPV05oTVRZMk9ESm1OakE0WlRFNVlUYzBPV0l5T1Rka1pEQVNDeElIRUphcnRydmZHUmdCJmZpbGVuYW1lPWluZGV4XzQuaHRtbCZvcGk9MTAzMTM1MDUw"/><style>
+    <style>
         body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
         .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
         .action-btns button { margin-right: 5px; }
@@ -21,6 +21,11 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.8); z-index: 9999;
             display: none; align-items: center; justify-content: center; flex-direction: column;
+        }
+        /* Summary Row */
+        .summary-row {
+            background-color: #e9ecef;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -79,6 +84,14 @@
                 <tbody id="tableBody">
                     <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
                 </tbody>
+                <tfoot id="tableFoot" style="display: none;">
+                    <tr class="summary-row">
+                        <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
+                        <td id="totalRows" class="text-primary fs-5">0</td>
+                        <td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td>
+                        <td id="totalFee" class="text-danger fs-5" colspan="4">0</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -435,22 +448,47 @@
             reader.readAsText(file);
         }
 
+        // Helper function to parse fee strings to numbers
+        function parseFee(feeStr) {
+            if (!feeStr) return 0;
+            // Remove spaces, commas, and dots to parse clean number. 
+            // Depending on how you type it e.g. "1.500" or "1500" or "1,500"
+            const cleaned = feeStr.toString().replace(/[,.\s]/g, ''); 
+            const num = parseFloat(cleaned);
+            return isNaN(num) ? 0 : num;
+        }
+
+        // Helper to format number back to readable format e.g. 1,500,000
+        function formatFee(feeNum) {
+            if (feeNum === 0) return "0";
+            return feeNum.toLocaleString('vi-VN');
+        }
+
         function renderTable() {
             const tbody = document.getElementById('tableBody');
+            const tfoot = document.getElementById('tableFoot');
             tbody.innerHTML = '';
             
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             if(appData.length === 0) {
                  tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
+                 tfoot.style.display = 'none';
                  return;
             }
+
+            let visibleCount = 0;
+            let totalFee = 0;
 
             appData.forEach((row, index) => {
                 const searchString = Object.values(row).join(' ').toLowerCase();
                 if (searchTerm && !searchString.includes(searchTerm)) {
-                    return;
+                    return; // Skip if it doesn't match filter
                 }
+
+                // If it passes the filter, count it
+                visibleCount++;
+                totalFee += parseFee(row.phi);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -472,6 +510,15 @@
                 `;
                 tbody.appendChild(tr);
             });
+            
+            // Show summary foot and update values
+            tfoot.style.display = 'table-footer-group';
+            document.getElementById('totalRows').innerText = visibleCount;
+            document.getElementById('totalFee').innerText = formatFee(totalFee);
+            
+            if (visibleCount === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>';
+            }
         }
 
         function openModal() {
