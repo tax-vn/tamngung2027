@@ -4,113 +4,604 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Tạm Ngưng (Cloud Sync)</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
-        .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
-        .action-btns button { margin-right: 5px; }
-        th { white-space: nowrap; }
-        #syncStatus { font-weight: bold; margin-left: 10px; }
-        .status-success { color: #198754; }
-        .status-error { color: #dc3545; }
-        .status-syncing { color: #0dcaf0; }
-        /* Overlay Loading */
-        #loadingOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8); z-index: 9999;
-            display: none; align-items: center; justify-content: center; flex-direction: column;
+        :root {
+            --bg: #f4f7fb;
+            --panel: rgba(255, 255, 255, 0.85);
+            --panel-solid: #ffffff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0f172a;
+            --muted: #64748b;
+            --border: rgba(148, 163, 184, 0.25);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+            --soft-shadow: 0 10px 20px rgba(37, 99, 235, 0.08);
         }
-        /* Summary Row */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff 0%, #f8fafc 30%, #f4f7fb 100%);
+            color: var(--secondary);
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        .app-shell {
+            max-width: 1460px;
+            margin: 0 auto;
+            padding: 28px 18px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            backdrop-filter: blur(8px);
+            box-shadow: var(--soft-shadow);
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-mark {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), #60a5fa);
+            color: white;
+            font-size: 1.45rem;
+            box-shadow: 0 14px 26px rgba(37, 99, 235, 0.28);
+        }
+
+        .eyebrow {
+            margin: 0 0 6px;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(1.45rem, 2vw, 2.2rem);
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .live-clock {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: var(--soft-shadow);
+            white-space: nowrap;
+        }
+
+        .glass-btn {
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: rgba(255,255,255,0.85);
+            color: var(--secondary);
+            font-weight: 600;
+            padding: 0.72rem 1rem;
+            transition: 0.2s ease;
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(15, 23, 42, 0.08);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--soft-shadow);
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto auto 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), #93c5fd);
+        }
+
+        .stat-label {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-value {
+            margin: 12px 0 0;
+            font-size: clamp(1.5rem, 2vw, 2.1rem);
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .stat-value.text-primary {
+            color: var(--primary);
+        }
+
+        .stat-value.text-success {
+            color: var(--success);
+        }
+
+        .stat-value.text-warning {
+            color: var(--warning);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar .btn {
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 0.72rem 1rem;
+        }
+
+        .toolbar .input-group {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(37,99,235,.08);
+        }
+
+        .toolbar .input-group .btn {
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .toolbar .input-group-text {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(148,163,184,0.25);
+            color: var(--secondary);
+            font-weight: 700;
+            min-width: 220px;
+            justify-content: center;
+        }
+
+        .toolbar .form-control {
+            min-width: 260px;
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,0.35);
+            background: rgba(255,255,255,0.75);
+            padding: 0.8rem 0.9rem;
+            box-shadow: none;
+        }
+
+        .content-panel {
+            background: rgba(255,255,255,0.82);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 18px 18px 10px;
+            overflow: hidden;
+        }
+
+        .table-headbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .table-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .table-container {
+            background: white;
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        #dataTable {
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1200px;
+        }
+
+        #dataTable thead th {
+            background: linear-gradient(180deg, #0f172a, #1e293b);
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            padding: 14px 12px;
+            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        #dataTable tbody td {
+            padding: 12px 12px;
+            border-bottom: 1px solid rgba(148,163,184,0.18);
+            vertical-align: middle;
+            font-size: 0.92rem;
+            color: #1f2937;
+        }
+
+        #dataTable tbody tr:nth-child(even) {
+            background: rgba(248,250,252,0.7);
+        }
+
+        #dataTable tbody tr:hover {
+            background: rgba(219,234,254,0.45);
+        }
+
         .summary-row {
-            background-color: #e9ecef;
-            font-weight: bold;
+            background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+            font-weight: 700;
+        }
+
+        .summary-row td {
+            padding: 14px 12px;
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .action-btns .btn {
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            padding: 0.52rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: rgba(245,158,11,0.12);
+            color: #92400e;
+            border: 1px solid rgba(245,158,11,0.18);
+        }
+
+        .summary-row .text-danger {
+            color: var(--danger) !important;
+        }
+
+        .summary-row .text-primary {
+            color: var(--primary) !important;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.76);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            backdrop-filter: blur(4px);
+        }
+
+        #loadingText {
+            margin-top: 18px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .spinner-border {
+            width: 3.2rem;
+            height: 3.2rem;
+            border-width: 0.28rem;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 22px;
+            box-shadow: 0 28px 70px rgba(15, 23, 42, 0.18);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding: 1.2rem 1.2rem 0.5rem;
+        }
+
+        .modal-title {
+            font-weight: 800;
+        }
+
+        .modal-body {
+            padding: 0.8rem 1.2rem 1rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,0.4);
+            padding: 0.72rem 0.8rem;
+            background: rgba(248,250,252,0.8);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: rgba(37,99,235,0.75);
+            box-shadow: 0 0 0 0.2rem rgba(37,99,235,0.12);
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #334155;
+            margin-bottom: 0.45rem;
+        }
+
+        .alert-info {
+            border-radius: 14px;
+        }
+
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-shell {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                padding: 16px 16px;
+            }
+
+            .topbar, .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .brand, .top-actions, .toolbar-group {
+                width: 100%;
+            }
+
+            .brand {
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+            }
+
+            .top-actions {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar .form-control {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .toolbar .ms-auto {
+                width: 100%;
+                margin-left: 0 !important;
+            }
+
+            .content-panel {
+                padding: 14px 12px 8px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="loadingOverlay">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-        <h4 class="mt-3 text-primary" id="loadingText">Đang đồng bộ dữ liệu...</h4>
+        <div class="spinner-border text-primary" role="status"></div>
+        <h4 class="mt-3" id="loadingText">Đang đồng bộ dữ liệu...</h4>
     </div>
 
-    <div class="container-fluid py-4">
-        <!-- Header & Đồng hồ live -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <h2 class="text-primary mb-0"><i class="fas fa-cloud"></i> Quản Lý Công Ty Tạm Ngưng</h2>
-            <div class="d-flex align-items-center gap-3">
-                <span id="liveClock" class="badge bg-white text-primary border p-2 fs-6 shadow-sm"><i class="far fa-clock"></i> --:--:--</span>
-                <button class="btn btn-outline-secondary shadow-sm" onclick="openConfigModal()">
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark"><i class="fas fa-cloud"></i></div>
+                <div>
+                    <p class="eyebrow">Dashboard</p>
+                    <h1>Quản Lý Công Ty Tạm Ngưng</h1>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <span id="liveClock" class="live-clock"><i class="far fa-clock"></i> --:--:--</span>
+                <button class="btn glass-btn" onclick="openConfigModal()">
                     <i class="fas fa-cog"></i> Cài Đặt GitHub
                 </button>
             </div>
-        </div>
-        
-        <!-- Thanh công cụ & Tìm kiếm -->
-        <div class="row mb-3">
-            <div class="col-md-12 d-flex gap-2 mb-2 align-items-center flex-wrap">
-                <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm Mới</button>
-                
-                <!-- Nhóm Nút Đồng Bộ + Hiển thị thời gian (MỚI) -->
-                <div class="input-group shadow-sm" style="width: auto;">
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-label">Tổng dòng</p>
+                <p class="stat-value text-primary" id="stat-totalRows">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Tổng phí</p>
+                <p class="stat-value text-danger" id="stat-totalFee">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Trạng thái</p>
+                <p class="stat-value text-success" id="stat-statusText">Chưa cấu hình</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Bộ lọc</p>
+                <p class="stat-value text-warning" id="stat-filterText">Tất cả</p>
+            </div>
+        </section>
+
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm mới</button>
+
+                <div class="input-group">
                     <button class="btn btn-info text-white fw-bold" onclick="manualSync()">
-                        <i class="fas fa-sync"></i> Tải Lại Cloud
+                        <i class="fas fa-sync"></i> Tải lại Cloud
                     </button>
-                    <span id="syncStatus" class="input-group-text bg-white" style="font-size: 0.9rem; font-weight: bold; min-width: 250px;">
+                    <span id="syncStatus" class="input-group-text" style="font-size: 0.9rem; font-weight: bold;">
                         Chưa cấu hình
                     </span>
                 </div>
-                
+
                 <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Backup Local</button>
-                <label class="btn btn-warning mb-0 text-dark fw-bold shadow-sm">
-                    <i class="fas fa-upload"></i> Import & Đẩy Lên Cloud
+                <label class="btn btn-warning mb-0 text-dark fw-bold">
+                    <i class="fas fa-upload"></i> Import & Đẩy lên Cloud
                     <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
                 </label>
-                
-                <!-- Thanh tìm kiếm đẩy sát lề phải -->
-                <div class="ms-auto" style="width: 300px;">
-                    <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
-                </div>
+            </div>
+
+            <div class="toolbar-group ms-auto" style="width: 320px; max-width: 100%;">
+                <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
             </div>
         </div>
 
-        <!-- Bảng Dữ Liệu -->
-        <div class="table-container table-responsive">
-            <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
-                <thead class="table-dark">
-                    <tr>
-                        <th>STT</th>
-                        <th>ID</th>
-                        <th>Box</th>
-                        <th>Mã Số Thuế</th>
-                        <th>Tên Công Ty</th>
-                        <th>Khách</th>
-                        <th>SĐT</th>
-                        <th>Ngày</th>
-                        <th>Phí</th>
-                        <th>Ghi Chú</th>
-                        <th>Trạng Thái</th>
-                        <th>Hành Động</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
-                </tbody>
-                <!-- Hàng Tính Tổng -->
-                <tfoot id="tableFoot" style="display: none;">
-                    <tr class="summary-row">
-                        <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
-                        <td id="totalRows" class="text-primary fs-5">0</td>
-                        <td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td>
-                        <td id="totalFee" class="text-danger fs-5" colspan="4">0</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+        <main class="content-panel">
+            <div class="table-headbar">
+                <div class="table-title"><i class="fas fa-table text-primary"></i> Dữ liệu công ty</div>
+                <span class="status-pill"><i class="fas fa-circle-notch fa-spin"></i> Sẵn sàng</span>
+            </div>
+
+            <div class="table-container table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>STT</th>
+                            <th>ID</th>
+                            <th>Box</th>
+                            <th>Mã Số Thuế</th>
+                            <th>Tên Công Ty</th>
+                            <th>Khách</th>
+                            <th>SĐT</th>
+                            <th>Ngày</th>
+                            <th>Phí</th>
+                            <th>Ghi Chú</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
+                    </tbody>
+                    <tfoot id="tableFoot" style="display: none;">
+                        <tr class="summary-row">
+                            <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
+                            <td id="totalRows" class="text-primary fs-5">0</td>
+                            <td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td>
+                            <td id="totalFee" class="text-danger fs-5" colspan="4">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </main>
     </div>
 
-    <!-- Modal Form (Add/Edit) -->
     <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -121,7 +612,6 @@
           <div class="modal-body">
             <form id="dataForm">
                 <input type="hidden" id="editIndex" value="-1">
-                <!-- Đã loại bỏ ô nhập STT, mở rộng ID và Box -->
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label class="form-label">ID</label>
@@ -136,7 +626,7 @@
                         <input type="text" class="form-control" id="mst" required>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label">Tên Công Ty <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="ten_cty" required>
@@ -182,7 +672,6 @@
       </div>
     </div>
 
-    <!-- Modal Config GitHub -->
     <div class="modal fade" id="configModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -219,22 +708,19 @@
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
         let appData = [];
         let formModal, configModal;
-        
+
         let ghConfig = {
             owner: '',
             repo: '',
             token: '',
             path: 'data.json',
-            sha: '' 
+            sha: ''
         };
 
-        // Đồng hồ live
         setInterval(() => {
             const now = new Date();
             const timeStr = now.toLocaleTimeString('vi-VN');
@@ -246,28 +732,29 @@
         window.onload = function() {
             formModal = new bootstrap.Modal(document.getElementById('formModal'));
             configModal = new bootstrap.Modal(document.getElementById('configModal'));
-            
+
             loadConfigFromLocal();
-            
+
             if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
                 fetchDataFromGithub();
             } else {
-                setStatus("Chưa cấu hình cài đặt.", 'error');
+                setStatus('Chưa cấu hình', 'error');
                 renderTable();
             }
         };
 
-        function showLoading(text = "Đang đồng bộ...") {
+        function showLoading(text = 'Đang đồng bộ...') {
             document.getElementById('loadingText').innerText = text;
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
+
         function hideLoading() {
             document.getElementById('loadingOverlay').style.display = 'none';
         }
 
         function setStatus(msg, type) {
             const el = document.getElementById('syncStatus');
-            el.className = 'input-group-text bg-white '; 
+            el.className = 'input-group-text bg-white ';
             if (type === 'success') {
                 el.classList.add('text-success');
                 el.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + msg;
@@ -280,6 +767,12 @@
             } else {
                 el.classList.add('text-secondary');
                 el.innerHTML = msg;
+            }
+
+            const statStatus = document.getElementById('stat-statusText');
+            if (statStatus) {
+                statStatus.textContent = msg;
+                statStatus.className = 'stat-value ' + (type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : type === 'sync' ? 'text-primary' : 'text-warning');
             }
         }
 
@@ -304,30 +797,30 @@
             const token = document.getElementById('gh_token').value.trim();
 
             if (!owner || !repo || !token) {
-                alert("Vui lòng điền đủ Tên tài khoản, Tên Repo và Token!");
+                alert('Vui lòng điền đủ Tên tài khoản, Tên Repo và Token!');
                 return;
             }
 
             ghConfig.owner = owner;
             ghConfig.repo = repo;
             ghConfig.token = token;
-            
+
             localStorage.setItem('ghSyncConfig', JSON.stringify({
                 owner: owner,
                 repo: repo,
                 token: token
             }));
-            
+
             configModal.hide();
             fetchDataFromGithub();
         }
 
         async function fetchDataFromGithub() {
-            setStatus("Đang tải dữ liệu...", 'sync');
-            showLoading("Đang lấy dữ liệu mới nhất...");
-            
+            setStatus('Đang tải dữ liệu...', 'sync');
+            showLoading('Đang lấy dữ liệu mới nhất...');
+
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
-            
+
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -338,13 +831,13 @@
                 });
 
                 if (response.status === 404) {
-                    const confirmCreate = confirm("File data.json chưa tồn tại trên Github! Bạn có muốn tạo file trống ngay bây giờ không?");
+                    const confirmCreate = confirm('File data.json chưa tồn tại trên Github! Bạn có muốn tạo file trống ngay bây giờ không?');
                     if (confirmCreate) {
                         appData = [];
-                        await pushDataToGithub("Khởi tạo file data.json", true);
+                        await pushDataToGithub('Khởi tạo file data.json', true);
                     } else {
                         hideLoading();
-                        setStatus("Lỗi: Không thấy data.json", 'error');
+                        setStatus('Lỗi: Không thấy data.json', 'error');
                         renderTable();
                     }
                     return;
@@ -355,24 +848,23 @@
                 }
 
                 const data = await response.json();
-                ghConfig.sha = data.sha; 
-                
+                ghConfig.sha = data.sha;
+
                 const decodedText = decodeURIComponent(escape(atob(data.content)));
-                
                 const parsedData = JSON.parse(decodedText);
-                
-                if(Array.isArray(parsedData) && parsedData.length === 0) {
-                    setStatus("Chưa có data! Hãy Import.", 'error');
+
+                if (Array.isArray(parsedData) && parsedData.length === 0) {
+                    setStatus('Chưa có data! Hãy Import.', 'error');
                     appData = [];
                 } else {
                     appData = parsedData;
-                    setStatus("Đã tải: " + new Date().toLocaleTimeString(), 'success');
+                    setStatus('Đã tải: ' + new Date().toLocaleTimeString(), 'success');
                 }
-                
+
                 renderTable();
             } catch (error) {
                 console.error(error);
-                setStatus("Lỗi: Kiểm tra cấu hình!", 'error');
+                setStatus('Lỗi: Kiểm tra cấu hình!', 'error');
                 alert(error.message);
                 renderTable();
             } finally {
@@ -380,12 +872,12 @@
             }
         }
 
-        async function pushDataToGithub(commitMessage = "Cập nhật dữ liệu tạm ngưng", isNewFile = false) {
-            setStatus("Đang lưu lên Cloud...", 'sync');
-            showLoading("Đang lưu dữ liệu lên Cloud...");
+        async function pushDataToGithub(commitMessage = 'Cập nhật dữ liệu tạm ngưng', isNewFile = false) {
+            setStatus('Đang lưu lên Cloud...', 'sync');
+            showLoading('Đang lưu dữ liệu lên Cloud...');
 
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
-            
+
             const contentStr = JSON.stringify(appData, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(contentStr)));
 
@@ -393,7 +885,7 @@
                 message: commitMessage,
                 content: encodedContent,
             };
-            
+
             if (!isNewFile && ghConfig.sha) {
                 body.sha = ghConfig.sha;
             }
@@ -411,21 +903,20 @@
 
                 if (!response.ok) {
                     if(response.status === 409) {
-                        throw new Error("Xung đột phiên bản! Có người khác vừa cập nhật. Hãy 'Tải Lại Cloud' trước.");
+                        throw new Error('Xung đột phiên bản! Có người khác vừa cập nhật. Hãy \'Tải Lại Cloud\' trước.');
                     }
                     if(response.status === 422) {
-                        throw new Error("Lỗi SHA (Mã 422). Hãy bấm 'Tải Lại Cloud' để lấy SHA mới nhất rồi thử lại.");
+                        throw new Error('Lỗi SHA (Mã 422). Hãy bấm \'Tải Lại Cloud\' để lấy SHA mới nhất rồi thử lại.');
                     }
                     throw new Error(`Lỗi cập nhật GitHub (Mã lỗi: ${response.status})`);
                 }
 
                 const responseData = await response.json();
                 ghConfig.sha = responseData.content.sha;
-                
-                setStatus("Đã lưu: " + new Date().toLocaleTimeString(), 'success');
+                setStatus('Đã lưu: ' + new Date().toLocaleTimeString(), 'success');
             } catch (error) {
                 console.error(error);
-                setStatus("Lỗi lưu dữ liệu!", 'error');
+                setStatus('Lỗi lưu dữ liệu!', 'error');
                 alert(error.message);
             } finally {
                 hideLoading();
@@ -434,7 +925,7 @@
 
         function manualSync() {
             if (!ghConfig.token) {
-                alert("Vui lòng cấu hình GitHub trước!");
+                alert('Vui lòng cấu hình GitHub trước!');
                 openConfigModal();
                 return;
             }
@@ -443,7 +934,7 @@
 
         function importData(event) {
             if (!ghConfig.token) {
-                alert("Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!");
+                alert('Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!');
                 event.target.value = '';
                 return;
             }
@@ -456,21 +947,21 @@
                 try {
                     const imported = JSON.parse(e.target.result);
                     if (Array.isArray(imported)) {
-                        const isOverride = confirm("Bạn muốn GHI ĐÈ toàn bộ dữ liệu trên Cloud (OK) hay THÊM VÀO dữ liệu hiện tại (Cancel)?");
+                        const isOverride = confirm('Bạn muốn GHI ĐÈ toàn bộ dữ liệu trên Cloud (OK) hay THÊM VÀO dữ liệu hiện tại (Cancel)?');
                         if (isOverride) {
                             appData = imported;
                         } else {
                             appData = appData.concat(imported);
                         }
-                        
+
                         renderTable();
                         await pushDataToGithub(`Import dữ liệu từ file ${file.name}`);
-                        alert("Import và đẩy lên Cloud thành công!");
+                        alert('Import và đẩy lên Cloud thành công!');
                     } else {
-                        alert("File JSON không đúng định dạng mảng (Array).");
+                        alert('File JSON không đúng định dạng mảng (Array).');
                     }
                 } catch (error) {
-                    alert("Lỗi đọc file JSON: " + error.message);
+                    alert('Lỗi đọc file JSON: ' + error.message);
                 }
                 event.target.value = '';
             };
@@ -479,13 +970,13 @@
 
         function parseFee(feeStr) {
             if (!feeStr) return 0;
-            const cleaned = feeStr.toString().replace(/[,.\s]/g, ''); 
+            const cleaned = feeStr.toString().replace(/[,\.\s]/g, '');
             const num = parseFloat(cleaned);
             return isNaN(num) ? 0 : num;
         }
 
         function formatFee(feeNum) {
-            if (feeNum === 0) return "0";
+            if (feeNum === 0) return '0';
             return feeNum.toLocaleString('vi-VN');
         }
 
@@ -493,13 +984,19 @@
             const tbody = document.getElementById('tableBody');
             const tfoot = document.getElementById('tableFoot');
             tbody.innerHTML = '';
-            
+
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if(appData.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
-                 tfoot.style.display = 'none';
-                 return;
+            const filterText = document.getElementById('stat-filterText');
+            if (filterText) {
+                filterText.textContent = searchTerm ? 'Đang lọc' : 'Tất cả';
+            }
+
+            if (appData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
+                tfoot.style.display = 'none';
+                document.getElementById('stat-totalRows').innerText = '0';
+                document.getElementById('stat-totalFee').innerText = '0';
+                return;
             }
 
             let visibleCount = 0;
@@ -508,10 +1005,10 @@
             appData.forEach((row, index) => {
                 const searchString = Object.values(row).join(' ').toLowerCase();
                 if (searchTerm && !searchString.includes(searchTerm)) {
-                    return; 
+                    return;
                 }
 
-                visibleCount++; // Biến này tự động đếm tăng dần 1, 2, 3...
+                visibleCount++;
                 totalFee += parseFee(row.phi);
 
                 const tr = document.createElement('tr');
@@ -526,7 +1023,7 @@
                     <td>${row.ngay || ''}</td>
                     <td>${row.phi || ''}</td>
                     <td>${row.ghichu || ''}</td>
-                    <td><span class="badge bg-warning text-dark">${row.trangthai || ''}</span></td>
+                    <td><span class="badge-status">${row.trangthai || ''}</span></td>
                     <td class="action-btns">
                         <button class="btn btn-sm btn-primary" onclick="editData(${index})" title="Sửa"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="deleteData(${index})" title="Xóa"><i class="fas fa-trash"></i></button>
@@ -534,11 +1031,13 @@
                 `;
                 tbody.appendChild(tr);
             });
-            
+
             tfoot.style.display = 'table-footer-group';
             document.getElementById('totalRows').innerText = visibleCount;
             document.getElementById('totalFee').innerText = formatFee(totalFee);
-            
+            document.getElementById('stat-totalRows').innerText = visibleCount;
+            document.getElementById('stat-totalFee').innerText = formatFee(totalFee);
+
             if (visibleCount === 0) {
                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>';
             }
@@ -547,15 +1046,15 @@
         function openModal() {
             document.getElementById('dataForm').reset();
             document.getElementById('editIndex').value = -1;
-            document.getElementById('modalTitle').innerText = "Thêm Công Ty Mới";
+            document.getElementById('modalTitle').innerText = 'Thêm Công Ty Mới';
             formModal.show();
         }
 
         function editData(index) {
             const row = appData[index];
             document.getElementById('editIndex').value = index;
-            document.getElementById('modalTitle').innerText = "Cập Nhật Thông Tin";
-            
+            document.getElementById('modalTitle').innerText = 'Cập Nhật Thông Tin';
+
             document.getElementById('id').value = row.id || '';
             document.getElementById('box').value = row.box || '';
             document.getElementById('mst').value = row.mst || '';
@@ -566,21 +1065,21 @@
             document.getElementById('phi').value = row.phi || '';
             document.getElementById('ghichu').value = row.ghichu || '';
             document.getElementById('trangthai').value = row.trangthai || '';
-            
+
             formModal.show();
         }
 
         async function saveForm() {
             if (!ghConfig.token) {
-                alert("Bạn phải cài đặt cấu hình GitHub thì mới có thể lưu đồng bộ!");
+                alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể lưu đồng bộ!');
                 return;
             }
 
             const mst = document.getElementById('mst').value.trim();
             const ten_cty = document.getElementById('ten_cty').value.trim();
-            
+
             if(!mst || !ten_cty) {
-                alert("Vui lòng nhập Mã Số Thuế và Tên Công Ty!");
+                alert('Vui lòng nhập Mã Số Thuế và Tên Công Ty!');
                 return;
             }
 
@@ -598,8 +1097,8 @@
             };
 
             const editIndex = document.getElementById('editIndex').value;
-            let actionName = "";
-            
+            let actionName = '';
+
             if (editIndex == -1) {
                 appData.push(newData);
                 actionName = `Thêm mới MST: ${mst}`;
@@ -615,21 +1114,21 @@
 
         async function deleteData(index) {
             if (!ghConfig.token) {
-                alert("Bạn phải cài đặt cấu hình GitHub thì mới có thể thực hiện thao tác này!");
+                alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể thực hiện thao tác này!');
                 return;
             }
 
-            if (confirm("Bạn có chắc chắn muốn xóa dòng này? Sẽ xóa vĩnh viễn trên Cloud!")) {
+            if (confirm('Bạn có chắc chắn muốn xóa dòng này? Sẽ xóa vĩnh viễn trên Cloud!')) {
                 const deletedMst = appData[index].mst;
                 appData.splice(index, 1);
                 renderTable();
                 await pushDataToGithub(`Xóa MST: ${deletedMst}`);
             }
         }
-        
+
         function exportData() {
             const dataStr = JSON.stringify(appData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
+            const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
