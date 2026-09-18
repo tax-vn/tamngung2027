@@ -36,33 +36,46 @@
     </div>
 
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Header & Đồng hồ live -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <h2 class="text-primary mb-0"><i class="fas fa-cloud"></i> Quản Lý Công Ty Tạm Ngưng</h2>
-            <button class="btn btn-outline-secondary" onclick="openConfigModal()">
-                <i class="fas fa-cog"></i> Cài Đặt GitHub
-            </button>
+            <div class="d-flex align-items-center gap-3">
+                <span id="liveClock" class="badge bg-white text-primary border p-2 fs-6 shadow-sm"><i class="far fa-clock"></i> --:--:--</span>
+                <button class="btn btn-outline-secondary shadow-sm" onclick="openConfigModal()">
+                    <i class="fas fa-cog"></i> Cài Đặt GitHub
+                </button>
+            </div>
         </div>
         
+        <!-- Thanh công cụ & Tìm kiếm -->
         <div class="row mb-3">
-            <div class="col-md-8 d-flex gap-2 mb-2 align-items-center flex-wrap">
+            <div class="col-md-12 d-flex gap-2 mb-2 align-items-center flex-wrap">
                 <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm Mới</button>
-                <button class="btn btn-info text-white" onclick="manualSync()"><i class="fas fa-sync"></i> Tải Lại Cloud</button>
+                
+                <!-- Nhóm Nút Đồng Bộ + Hiển thị thời gian (MỚI) -->
+                <div class="input-group shadow-sm" style="width: auto;">
+                    <button class="btn btn-info text-white fw-bold" onclick="manualSync()">
+                        <i class="fas fa-sync"></i> Tải Lại Cloud
+                    </button>
+                    <span id="syncStatus" class="input-group-text bg-white" style="font-size: 0.9rem; font-weight: bold; min-width: 250px;">
+                        Chưa cấu hình
+                    </span>
+                </div>
+                
                 <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Backup Local</button>
-                <label class="btn btn-warning mb-0 text-dark fw-bold">
+                <label class="btn btn-warning mb-0 text-dark fw-bold shadow-sm">
                     <i class="fas fa-upload"></i> Import & Đẩy Lên Cloud
                     <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
                 </label>
-            </div>
-            <div class="col-md-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
-            </div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-12">
-                 <span id="syncStatus">Trạng thái: Chưa cấu hình</span>
+                
+                <!-- Thanh tìm kiếm đẩy sát lề phải -->
+                <div class="ms-auto" style="width: 300px;">
+                    <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
+                </div>
             </div>
         </div>
 
+        <!-- Bảng Dữ Liệu -->
         <div class="table-container table-responsive">
             <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
                 <thead class="table-dark">
@@ -84,6 +97,7 @@
                 <tbody id="tableBody">
                     <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
                 </tbody>
+                <!-- Hàng Tính Tổng -->
                 <tfoot id="tableFoot" style="display: none;">
                     <tr class="summary-row">
                         <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
@@ -107,16 +121,13 @@
           <div class="modal-body">
             <form id="dataForm">
                 <input type="hidden" id="editIndex" value="-1">
+                <!-- Đã loại bỏ ô nhập STT, mở rộng ID và Box -->
                 <div class="row">
-                    <div class="col-md-2 mb-3">
-                        <label class="form-label">STT</label>
-                        <input type="text" class="form-control" id="stt">
-                    </div>
-                    <div class="col-md-2 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label class="form-label">ID</label>
                         <input type="text" class="form-control" id="id">
                     </div>
-                    <div class="col-md-2 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label class="form-label">Box</label>
                         <input type="text" class="form-control" id="box">
                     </div>
@@ -223,6 +234,15 @@
             sha: '' 
         };
 
+        // Đồng hồ live
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN');
+            const dateStr = now.toLocaleDateString('vi-VN');
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.innerHTML = `<i class="far fa-clock"></i> ${timeStr} - ${dateStr}`;
+        }, 1000);
+
         window.onload = function() {
             formModal = new bootstrap.Modal(document.getElementById('formModal'));
             configModal = new bootstrap.Modal(document.getElementById('configModal'));
@@ -232,7 +252,7 @@
             if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
                 fetchDataFromGithub();
             } else {
-                setStatus("Chưa cấu hình GitHub. Vui lòng cài đặt.", 'error');
+                setStatus("Chưa cấu hình cài đặt.", 'error');
                 renderTable();
             }
         };
@@ -244,13 +264,23 @@
         function hideLoading() {
             document.getElementById('loadingOverlay').style.display = 'none';
         }
+
         function setStatus(msg, type) {
             const el = document.getElementById('syncStatus');
-            el.innerText = msg;
-            el.className = '';
-            if (type === 'success') el.classList.add('status-success');
-            if (type === 'error') el.classList.add('status-error');
-            if (type === 'sync') el.classList.add('status-syncing');
+            el.className = 'input-group-text bg-white '; 
+            if (type === 'success') {
+                el.classList.add('text-success');
+                el.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + msg;
+            } else if (type === 'error') {
+                el.classList.add('text-danger');
+                el.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> ' + msg;
+            } else if (type === 'sync') {
+                el.classList.add('text-info');
+                el.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> ' + msg;
+            } else {
+                el.classList.add('text-secondary');
+                el.innerHTML = msg;
+            }
         }
 
         function loadConfigFromLocal() {
@@ -293,7 +323,7 @@
         }
 
         async function fetchDataFromGithub() {
-            setStatus("Đang tải dữ liệu từ Cloud...", 'sync');
+            setStatus("Đang tải dữ liệu...", 'sync');
             showLoading("Đang lấy dữ liệu mới nhất...");
             
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
@@ -314,7 +344,7 @@
                         await pushDataToGithub("Khởi tạo file data.json", true);
                     } else {
                         hideLoading();
-                        setStatus("Lỗi: Không tìm thấy file data.json", 'error');
+                        setStatus("Lỗi: Không thấy data.json", 'error');
                         renderTable();
                     }
                     return;
@@ -332,17 +362,17 @@
                 const parsedData = JSON.parse(decodedText);
                 
                 if(Array.isArray(parsedData) && parsedData.length === 0) {
-                    setStatus("File trên Cloud đang rỗng. Hãy dùng nút 'Import & Đẩy Lên Cloud'.", 'error');
+                    setStatus("Chưa có data! Hãy Import.", 'error');
                     appData = [];
                 } else {
                     appData = parsedData;
-                    setStatus("Dữ liệu đã đồng bộ lúc: " + new Date().toLocaleTimeString(), 'success');
+                    setStatus("Đã tải: " + new Date().toLocaleTimeString(), 'success');
                 }
                 
                 renderTable();
             } catch (error) {
                 console.error(error);
-                setStatus("Lỗi tải dữ liệu: Vui lòng kiểm tra lại cấu hình Cài đặt", 'error');
+                setStatus("Lỗi: Kiểm tra cấu hình!", 'error');
                 alert(error.message);
                 renderTable();
             } finally {
@@ -351,7 +381,7 @@
         }
 
         async function pushDataToGithub(commitMessage = "Cập nhật dữ liệu tạm ngưng", isNewFile = false) {
-            setStatus("Đang tải lên Cloud...", 'sync');
+            setStatus("Đang lưu lên Cloud...", 'sync');
             showLoading("Đang lưu dữ liệu lên Cloud...");
 
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
@@ -392,10 +422,10 @@
                 const responseData = await response.json();
                 ghConfig.sha = responseData.content.sha;
                 
-                setStatus("Đã lưu an toàn lên Cloud lúc: " + new Date().toLocaleTimeString(), 'success');
+                setStatus("Đã lưu: " + new Date().toLocaleTimeString(), 'success');
             } catch (error) {
                 console.error(error);
-                setStatus("Lỗi lưu dữ liệu: Không thể đồng bộ!", 'error');
+                setStatus("Lỗi lưu dữ liệu!", 'error');
                 alert(error.message);
             } finally {
                 hideLoading();
@@ -411,7 +441,6 @@
             fetchDataFromGithub();
         }
 
-        // CHỨC NĂNG IMPORT MỚI
         function importData(event) {
             if (!ghConfig.token) {
                 alert("Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!");
@@ -448,17 +477,13 @@
             reader.readAsText(file);
         }
 
-        // Helper function to parse fee strings to numbers
         function parseFee(feeStr) {
             if (!feeStr) return 0;
-            // Remove spaces, commas, and dots to parse clean number. 
-            // Depending on how you type it e.g. "1.500" or "1500" or "1,500"
             const cleaned = feeStr.toString().replace(/[,.\s]/g, ''); 
             const num = parseFloat(cleaned);
             return isNaN(num) ? 0 : num;
         }
 
-        // Helper to format number back to readable format e.g. 1,500,000
         function formatFee(feeNum) {
             if (feeNum === 0) return "0";
             return feeNum.toLocaleString('vi-VN');
@@ -483,16 +508,15 @@
             appData.forEach((row, index) => {
                 const searchString = Object.values(row).join(' ').toLowerCase();
                 if (searchTerm && !searchString.includes(searchTerm)) {
-                    return; // Skip if it doesn't match filter
+                    return; 
                 }
 
-                // If it passes the filter, count it
-                visibleCount++;
+                visibleCount++; // Biến này tự động đếm tăng dần 1, 2, 3...
                 totalFee += parseFee(row.phi);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${row.stt || ''}</td>
+                    <td class="text-center fw-bold text-primary">${visibleCount}</td>
                     <td>${row.id || ''}</td>
                     <td>${row.box || ''}</td>
                     <td><strong>${row.mst || ''}</strong></td>
@@ -511,7 +535,6 @@
                 tbody.appendChild(tr);
             });
             
-            // Show summary foot and update values
             tfoot.style.display = 'table-footer-group';
             document.getElementById('totalRows').innerText = visibleCount;
             document.getElementById('totalFee').innerText = formatFee(totalFee);
@@ -533,7 +556,6 @@
             document.getElementById('editIndex').value = index;
             document.getElementById('modalTitle').innerText = "Cập Nhật Thông Tin";
             
-            document.getElementById('stt').value = row.stt || '';
             document.getElementById('id').value = row.id || '';
             document.getElementById('box').value = row.box || '';
             document.getElementById('mst').value = row.mst || '';
@@ -563,7 +585,6 @@
             }
 
             const newData = {
-                stt: document.getElementById('stt').value,
                 id: document.getElementById('id').value,
                 box: document.getElementById('box').value,
                 mst: mst,
