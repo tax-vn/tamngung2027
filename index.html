@@ -1,46 +1,642 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quản Lý Tạm Ngưng (Cloud Sync)</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root{--blue:#2563eb;--dark:#0f172a;--muted:#64748b;--border:rgba(148,163,184,.25)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#eef4ff,#f8fafc 40%,#f4f7fb);color:var(--dark)}
-.app-shell{max-width:1460px;margin:auto;padding:28px 18px 40px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 22px;margin-bottom:22px;background:#ffffffe8;border:1px solid var(--border);border-radius:22px;box-shadow:0 14px 30px #0f172a1f}.brand{display:flex;align-items:center;gap:16px}.brand-mark{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),#60a5fa);color:#fff;font-size:1.45rem}.eyebrow{margin:0 0 6px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:700}h1{margin:0;font-size:clamp(1.45rem,2vw,2.2rem);font-weight:800}.top-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.live-clock,.glass-btn{border:1px solid var(--border);border-radius:14px;padding:10px 14px;background:#fff;color:var(--blue);font-weight:700;white-space:nowrap}.glass-btn{color:var(--dark);padding:.72rem 1rem}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(200px,1fr));gap:16px;margin-bottom:22px}.stat-card{position:relative;padding:18px 20px;background:#ffffffe8;border:1px solid var(--border);border-radius:20px;box-shadow:0 10px 20px #2563eb14;overflow:hidden}.stat-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--blue),#93c5fd)}.stat-label{margin:0;color:var(--muted);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.stat-value{margin:12px 0 0;font-size:clamp(1.4rem,2vw,2.1rem);font-weight:800}.text-primary{color:var(--blue)!important}.text-success{color:#10b981!important}.text-warning{color:#f59e0b!important}.text-danger{color:#ef4444!important}
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px;padding:16px 18px;background:#ffffffb3;border:1px solid var(--border);border-radius:18px;box-shadow:0 10px 20px #2563eb14}.toolbar-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.toolbar .btn{border-radius:12px;font-weight:700;padding:.72rem 1rem}.toolbar .input-group{border-radius:12px;overflow:hidden}.toolbar .input-group-text{min-width:220px;justify-content:center;background:#fff;border:1px solid var(--border);font-weight:700}.toolbar .form-control{min-width:260px;border-radius:12px;padding:.8rem .9rem}
-.content-panel{padding:18px 18px 10px;background:#ffffffd1;border:1px solid var(--border);border-radius:22px;box-shadow:0 20px 45px #0f172a1f;overflow:visible}.table-headbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 8px 16px}.table-title{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800}.status-pill{display:inline-flex;align-items:center;gap:8px;padding:.45rem .8rem;border-radius:999px;background:#10b9811a;color:#10b981;font-size:.82rem;font-weight:700}
-/* Chỉ tiêu đề cột được cố định; header chính và dòng 'Dữ liệu công ty' không cố định. */
-.table-container{width:100%;max-width:100%;background:#fff;border:1px solid #94a3b830;border-radius:14px;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#94a3b8 #e2e8f0}.table-container::-webkit-scrollbar{height:10px}.table-container::-webkit-scrollbar-track{background:#e2e8f0}.table-container::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:99px}#dataTable{width:max-content;min-width:1200px;margin:0;border-collapse:separate;border-spacing:0}#dataTable thead th{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0f172a,#1e293b);color:#fff;font-size:.82rem;white-space:nowrap;padding:14px 12px;border-bottom:0}#dataTable tbody td{padding:12px;border-bottom:1px solid #94a3b830;vertical-align:middle;font-size:.92rem}#dataTable tbody tr:nth-child(even){background:#f8fafcb3}#dataTable tbody tr:hover{background:#dbeafe73}.summary-row{background:linear-gradient(#eff6ff,#dbeafe);font-weight:700}.summary-row td{padding:14px 12px}.action-btns{display:flex;gap:8px;justify-content:center;white-space:nowrap}.action-btns .btn{width:38px;height:38px;padding:0;border-radius:10px}.badge-status{display:inline-flex;min-width:110px;justify-content:center;padding:.52rem .75rem;border-radius:999px;background:#f59e0b1f;color:#92400e;font-size:.78rem;font-weight:700}
-#loadingOverlay{position:fixed;inset:0;background:#ffffffc2;z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(4px)}#loadingText{margin-top:18px;font-weight:800;color:var(--blue)}.modal-content{border:0;border-radius:22px;box-shadow:0 28px 70px #0f172a2e}.modal-header{border:0}.form-control{border-radius:12px;padding:.72rem .8rem}.form-label{font-weight:700;font-size:.88rem;color:#334155}
-@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:768px){.app-shell{padding:12px 10px 28px}.topbar,.toolbar{flex-direction:column;align-items:stretch}.brand,.top-actions,.toolbar-group{width:100%}.brand{justify-content:center;text-align:center;flex-direction:column}.top-actions{justify-content:center}.stats-grid{grid-template-columns:1fr}.toolbar .form-control{min-width:0;width:100%}.toolbar .ms-auto{width:100%;margin-left:0!important}.content-panel{padding:14px 10px 8px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tạm Ngưng (Cloud Sync)</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
+        .table-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; }
+        .action-btns button { margin-right: 5px; }
+        th { white-space: nowrap; }
+        #syncStatus { font-weight: bold; margin-left: 10px; }
+        .status-success { color: #198754; }
+        .status-error { color: #dc3545; }
+        .status-syncing { color: #0dcaf0; }
+        /* Overlay Loading */
+        #loadingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8); z-index: 9999;
+            display: none; align-items: center; justify-content: center; flex-direction: column;
+        }
+        /* Summary Row */
+        .summary-row {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<div id="loadingOverlay"><div class="spinner-border text-primary" role="status"></div><h4 id="loadingText">Đang đồng bộ dữ liệu...</h4></div>
-<div class="app-shell">
-<header class="topbar"><div class="brand"><div class="brand-mark"><i class="fas fa-cloud"></i></div><div><p class="eyebrow">Dashboard</p><h1>Quản Lý Công Ty Tạm Ngưng</h1></div></div><div class="top-actions"><span id="liveClock" class="live-clock"><i class="far fa-clock"></i> --:--:--</span><button class="btn glass-btn" onclick="openConfigModal()"><i class="fas fa-cog"></i> Cài Đặt GitHub</button></div></header>
-<section class="stats-grid"><div class="stat-card"><p class="stat-label">Tổng dòng</p><p class="stat-value text-primary" id="stat-totalRows">0</p></div><div class="stat-card"><p class="stat-label">Tổng phí</p><p class="stat-value text-danger" id="stat-totalFee">0</p></div><div class="stat-card"><p class="stat-label">Trạng thái</p><p class="stat-value text-success" id="stat-statusText">Chưa cấu hình</p></div><div class="stat-card"><p class="stat-label">Bộ lọc</p><p class="stat-value text-warning" id="stat-filterText">Tất cả</p></div></section>
-<div class="toolbar"><div class="toolbar-group"><button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm mới</button><div class="input-group"><button class="btn btn-info text-white fw-bold" onclick="manualSync()"><i class="fas fa-sync"></i> Tải lại Cloud</button><span id="syncStatus" class="input-group-text">Chưa cấu hình</span></div><button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Backup Local</button><label class="btn btn-warning mb-0 text-dark fw-bold"><i class="fas fa-upload"></i> Import & Đẩy lên Cloud<input type="file" accept=".json" hidden onchange="importData(event)"></label></div><div class="toolbar-group ms-auto" style="width:320px;max-width:100%"><input id="searchInput" class="form-control" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()"></div></div>
-<main class="content-panel"><div class="table-headbar"><div class="table-title"><i class="fas fa-table text-primary"></i> Dữ liệu công ty</div><span class="status-pill"><i class="fas fa-circle-notch fa-spin"></i> Sẵn sàng</span></div><div class="table-container"><table class="table table-striped table-hover table-bordered align-middle" id="dataTable"><thead><tr><th>STT</th><th>ID</th><th>Box</th><th>Mã Số Thuế</th><th>Tên Công Ty</th><th>Khách</th><th>SĐT</th><th>Ngày</th><th>Phí</th><th>Ghi Chú</th><th>Trạng Thái</th><th>Hành Động</th></tr></thead><tbody id="tableBody"><tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr></tbody><tfoot id="tableFoot" style="display:none"><tr class="summary-row"><td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td><td id="totalRows" class="text-primary fs-5">0</td><td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td><td id="totalFee" class="text-danger fs-5" colspan="4">0</td></tr></tfoot></table></div></main></div>
-<div class="modal fade" id="formModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Thêm Mới</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="dataForm"><input type="hidden" id="editIndex" value="-1"><div class="row"><div class="col-md-3 mb-3"><label class="form-label">ID</label><input class="form-control" id="id"></div><div class="col-md-3 mb-3"><label class="form-label">Box</label><input class="form-control" id="box"></div><div class="col-md-6 mb-3"><label class="form-label">Mã Số Thuế *</label><input class="form-control" id="mst" required></div></div><div class="mb-3"><label class="form-label">Tên Công Ty *</label><input class="form-control" id="ten_cty" required></div><div class="row"><div class="col-md-6 mb-3"><label class="form-label">Khách</label><input class="form-control" id="khach"></div><div class="col-md-6 mb-3"><label class="form-label">SĐT</label><input class="form-control" id="sdt"></div></div><div class="row"><div class="col-md-4 mb-3"><label class="form-label">Ngày</label><input class="form-control" id="ngay" placeholder="YYYY-MM-DD"></div><div class="col-md-4 mb-3"><label class="form-label">Phí</label><input class="form-control" id="phi"></div><div class="col-md-4 mb-3"><label class="form-label">Ghi Chú</label><input class="form-control" id="ghichu"></div></div><div class="mb-3"><label class="form-label">Trạng Thái</label><input class="form-control" id="trangthai"></div></form></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button class="btn btn-primary" onclick="saveForm()">Lưu & Cập Nhật Cloud</button></div></div></div></div>
-<div class="modal fade" id="configModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title"><i class="fab fa-github"></i> Cài Đặt Kết Nối GitHub</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="alert alert-info small">Thông tin được lưu cục bộ trên trình duyệt.</div><label class="form-label">GitHub Owner *</label><input class="form-control mb-3" id="gh_owner"><label class="form-label">Tên Repo *</label><input class="form-control mb-3" id="gh_repo"><label class="form-label">Personal Access Token *</label><input type="password" class="form-control mb-3" id="gh_token"><label class="form-label">Tên File Dữ Liệu</label><input class="form-control" value="data.json" readonly></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button class="btn btn-primary" onclick="saveConfig()">Lưu Cấu Hình & Tải Dữ Liệu</button></div></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-let appData=[],formModal,configModal,ghConfig={owner:'',repo:'',token:'',path:'data.json',sha:''};
-setInterval(()=>{let n=new Date(),e=document.getElementById('liveClock');if(e)e.innerHTML=`<i class="far fa-clock"></i> ${n.toLocaleTimeString('vi-VN')} - ${n.toLocaleDateString('vi-VN')}`},1000);
-window.onload=()=>{formModal=new bootstrap.Modal(formModalEl());configModal=new bootstrap.Modal(document.getElementById('configModal'));loadConfig();ghConfig.token&&ghConfig.owner&&ghConfig.repo?fetchData(): (setStatus('Chưa cấu hình','error'),renderTable())};function formModalEl(){return document.getElementById('formModal')}
-function loading(t){document.getElementById('loadingText').textContent=t;document.getElementById('loadingOverlay').style.display='flex'}function done(){document.getElementById('loadingOverlay').style.display='none'}
-function setStatus(m,t){let e=document.getElementById('syncStatus');e.className='input-group-text bg-white '+(t==='success'?'text-success':t==='error'?'text-danger':t==='sync'?'text-info':'text-secondary');e.innerHTML=m;let s=document.getElementById('stat-statusText');s.textContent=m;s.className='stat-value '+(t==='success'?'text-success':t==='error'?'text-danger':t==='sync'?'text-primary':'text-warning')}
-function loadConfig(){let s=localStorage.getItem('ghSyncConfig');if(s)ghConfig={...ghConfig,...JSON.parse(s)};gh_owner.value=ghConfig.owner;gh_repo.value=ghConfig.repo;gh_token.value=ghConfig.token}function openConfigModal(){loadConfig();configModal.show()}function saveConfig(){let o=gh_owner.value.trim(),r=gh_repo.value.trim(),t=gh_token.value.trim();if(!o||!r||!t)return alert('Vui lòng điền đủ thông tin!');ghConfig={...ghConfig,owner:o,repo:r,token:t};localStorage.setItem('ghSyncConfig',JSON.stringify({owner:o,repo:r,token:t}));configModal.hide();fetchData()}
-async function fetchData(){setStatus('Đang tải dữ liệu...','sync');loading('Đang lấy dữ liệu mới nhất...');try{let r=await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`,{headers:{Authorization:`token ${ghConfig.token}`,Accept:'application/vnd.github.v3+json'},cache:'no-store'});if(!r.ok)throw Error(`Lỗi tải dữ liệu (Mã lỗi: ${r.status})`);let d=await r.json();ghConfig.sha=d.sha;appData=JSON.parse(decodeURIComponent(escape(atob(d.content))));setStatus('Đã tải: '+new Date().toLocaleTimeString(),'success');renderTable()}catch(e){setStatus('Lỗi: Kiểm tra cấu hình!','error');alert(e.message);renderTable()}finally{done()}}
-async function push(msg='Cập nhật dữ liệu'){setStatus('Đang lưu lên Cloud...','sync');loading('Đang lưu dữ liệu lên Cloud...');try{let r=await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`,{method:'PUT',headers:{Authorization:`token ${ghConfig.token}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(appData,null,2)))),sha:ghConfig.sha})});if(!r.ok)throw Error(`Lỗi cập nhật GitHub (Mã lỗi: ${r.status})`);ghConfig.sha=(await r.json()).content.sha;setStatus('Đã lưu: '+new Date().toLocaleTimeString(),'success')}catch(e){setStatus('Lỗi lưu dữ liệu!','error');alert(e.message)}finally{done()}}
-function manualSync(){ghConfig.token?fetchData():(alert('Vui lòng cấu hình GitHub trước!'),openConfigModal())}function parseFee(v){return parseFloat(String(v||'').replace(/[,\.\s]/g,''))||0}function fee(v){return v?Number(v).toLocaleString('vi-VN'):'0'}
-function renderTable(){let b=tableBody,f=tableFoot;b.innerHTML='';let q=searchInput.value.toLowerCase();stat_filterText.textContent=q?'Đang lọc':'Tất cả';if(!appData.length){b.innerHTML='<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';f.style.display='none';stat_totalRows.textContent=totalRows.textContent=0;stat_totalFee.textContent=totalFee.textContent=0;return}let n=0,sum=0;appData.forEach((r,i)=>{if(q&&!Object.values(r).join(' ').toLowerCase().includes(q))return;n++;sum+=parseFee(r.phi);let tr=document.createElement('tr');tr.innerHTML=`<td class="text-center fw-bold text-primary">${n}</td><td>${r.id||''}</td><td>${r.box||''}</td><td><strong>${r.mst||''}</strong></td><td>${r.ten_cty||''}</td><td>${r.khach||''}</td><td>${r.sdt||''}</td><td>${r.ngay||''}</td><td>${r.phi||''}</td><td>${r.ghichu||''}</td><td><span class="badge-status">${r.trangthai||''}</span></td><td class="action-btns"><button class="btn btn-primary" onclick="editData(${i})"><i class="fas fa-edit"></i></button><button class="btn btn-danger" onclick="deleteData(${i})"><i class="fas fa-trash"></i></button></td>`;b.appendChild(tr)});f.style.display='table-footer-group';totalRows.textContent=stat_totalRows.textContent=n;totalFee.textContent=stat_totalFee.textContent=fee(sum);if(!n)b.innerHTML='<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>'}
-function openModal(){dataForm.reset();editIndex.value=-1;modalTitle.textContent='Thêm Công Ty Mới';formModal.show()}function editData(i){let r=appData[i];editIndex.value=i;modalTitle.textContent='Cập Nhật Thông Tin';['id','box','mst','ten_cty','khach','sdt','ngay','phi','ghichu','trangthai'].forEach(k=>document.getElementById(k).value=r[k]||'');formModal.show()}
-async function saveForm(){if(!ghConfig.token)return alert('Bạn phải cài đặt GitHub trước!');if(!mst.value.trim()||!ten_cty.value.trim())return alert('Vui lòng nhập Mã Số Thuế và Tên Công Ty!');let r={};['id','box','mst','ten_cty','khach','sdt','ngay','phi','ghichu','trangthai'].forEach(k=>r[k]=document.getElementById(k).value);let i=+editIndex.value;i<0?appData.push(r):appData[i]=r;formModal.hide();renderTable();await push(i<0?'Thêm mới MST: '+r.mst:'Cập nhật MST: '+r.mst)}
-async function deleteData(i){if(ghConfig.token&&confirm('Bạn có chắc chắn muốn xóa dòng này?')){let m=appData[i].mst;appData.splice(i,1);renderTable();await push('Xóa MST: '+m)}}function exportData(){let u=URL.createObjectURL(new Blob([JSON.stringify(appData,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='backup_tamngung_'+Date.now()+'.json';a.click();URL.revokeObjectURL(u)}
-function importData(e){if(!ghConfig.token)return alert('Bạn phải cài đặt GitHub trước!');let file=e.target.files[0];if(!file)return;let rd=new FileReader();rd.onload=async x=>{try{let d=JSON.parse(x.target.result);if(!Array.isArray(d))throw Error('File JSON phải là một mảng dữ liệu.');appData=confirm('GHI ĐÈ dữ liệu hiện tại?')?d:appData.concat(d);renderTable();await push('Import dữ liệu từ '+file.name)}catch(err){alert(err.message)}e.target.value=''};rd.readAsText(file)}
-</script></body></html>
+    <div id="loadingOverlay">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        <h4 class="mt-3 text-primary" id="loadingText">Đang đồng bộ dữ liệu...</h4>
+    </div>
+
+    <div class="container-fluid py-4">
+        <!-- Header & Đồng hồ live -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="text-primary mb-0"><i class="fas fa-cloud"></i> Quản Lý Công Ty Tạm Ngưng</h2>
+            <div class="d-flex align-items-center gap-3">
+                <span id="liveClock" class="badge bg-white text-primary border p-2 fs-6 shadow-sm"><i class="far fa-clock"></i> --:--:--</span>
+                <button class="btn btn-outline-secondary shadow-sm" onclick="openConfigModal()">
+                    <i class="fas fa-cog"></i> Cài Đặt GitHub
+                </button>
+            </div>
+        </div>
+        
+        <!-- Thanh công cụ & Tìm kiếm -->
+        <div class="row mb-3">
+            <div class="col-md-12 d-flex gap-2 mb-2 align-items-center flex-wrap">
+                <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm Mới</button>
+                
+                <!-- Nhóm Nút Đồng Bộ + Hiển thị thời gian (MỚI) -->
+                <div class="input-group shadow-sm" style="width: auto;">
+                    <button class="btn btn-info text-white fw-bold" onclick="manualSync()">
+                        <i class="fas fa-sync"></i> Tải Lại Cloud
+                    </button>
+                    <span id="syncStatus" class="input-group-text bg-white" style="font-size: 0.9rem; font-weight: bold; min-width: 250px;">
+                        Chưa cấu hình
+                    </span>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Backup Local</button>
+                <label class="btn btn-warning mb-0 text-dark fw-bold shadow-sm">
+                    <i class="fas fa-upload"></i> Import & Đẩy Lên Cloud
+                    <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
+                </label>
+                
+                <!-- Thanh tìm kiếm đẩy sát lề phải -->
+                <div class="ms-auto" style="width: 300px;">
+                    <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng Dữ Liệu -->
+        <div class="table-container table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>STT</th>
+                        <th>ID</th>
+                        <th>Box</th>
+                        <th>Mã Số Thuế</th>
+                        <th>Tên Công Ty</th>
+                        <th>Khách</th>
+                        <th>SĐT</th>
+                        <th>Ngày</th>
+                        <th>Phí</th>
+                        <th>Ghi Chú</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
+                </tbody>
+                <!-- Hàng Tính Tổng -->
+                <tfoot id="tableFoot" style="display: none;">
+                    <tr class="summary-row">
+                        <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
+                        <td id="totalRows" class="text-primary fs-5">0</td>
+                        <td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td>
+                        <td id="totalFee" class="text-danger fs-5" colspan="4">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form (Add/Edit) -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Thêm Mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="dataForm">
+                <input type="hidden" id="editIndex" value="-1">
+                <!-- Đã loại bỏ ô nhập STT, mở rộng ID và Box -->
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">ID</label>
+                        <input type="text" class="form-control" id="id">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Box</label>
+                        <input type="text" class="form-control" id="box">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Mã Số Thuế <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="mst" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Tên Công Ty <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="ten_cty" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Khách</label>
+                        <input type="text" class="form-control" id="khach">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">SĐT</label>
+                        <input type="text" class="form-control" id="sdt">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Ngày</label>
+                        <input type="text" class="form-control" id="ngay" placeholder="YYYY-MM-DD">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Phí</label>
+                        <input type="text" class="form-control" id="phi">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Ghi Chú</label>
+                        <input type="text" class="form-control" id="ghichu">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Trạng Thái (Tạm Ngưng)</label>
+                    <input type="text" class="form-control" id="trangthai">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" onclick="saveForm()">Lưu & Cập Nhật Cloud</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Config GitHub -->
+    <div class="modal fade" id="configModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+              <h5 class="modal-title"><i class="fab fa-github"></i> Cài Đặt Kết Nối GitHub</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info small">
+                    Thông tin này được lưu cục bộ trên trình duyệt của máy bạn, không bị chia sẻ ra ngoài.
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên Tài Khoản GitHub (Owner) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="gh_owner" placeholder="vd: nguyenvana" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên Kho Lưu Trữ (Repo) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="gh_repo" placeholder="vd: quan-ly-tam-ngung" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Personal Access Token (PAT) <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control" id="gh_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên File Dữ Liệu</label>
+                    <input type="text" class="form-control" id="gh_file" value="data.json" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="button" class="btn btn-primary" onclick="saveConfig()">Lưu Cấu Hình & Tải Dữ Liệu</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let appData = [];
+        let formModal, configModal;
+        
+        let ghConfig = {
+            owner: '',
+            repo: '',
+            token: '',
+            path: 'data.json',
+            sha: '' 
+        };
+
+        // Đồng hồ live
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN');
+            const dateStr = now.toLocaleDateString('vi-VN');
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.innerHTML = `<i class="far fa-clock"></i> ${timeStr} - ${dateStr}`;
+        }, 1000);
+
+        window.onload = function() {
+            formModal = new bootstrap.Modal(document.getElementById('formModal'));
+            configModal = new bootstrap.Modal(document.getElementById('configModal'));
+            
+            loadConfigFromLocal();
+            
+            if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
+                fetchDataFromGithub();
+            } else {
+                setStatus("Chưa cấu hình cài đặt.", 'error');
+                renderTable();
+            }
+        };
+
+        function showLoading(text = "Đang đồng bộ...") {
+            document.getElementById('loadingText').innerText = text;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function setStatus(msg, type) {
+            const el = document.getElementById('syncStatus');
+            el.className = 'input-group-text bg-white '; 
+            if (type === 'success') {
+                el.classList.add('text-success');
+                el.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + msg;
+            } else if (type === 'error') {
+                el.classList.add('text-danger');
+                el.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> ' + msg;
+            } else if (type === 'sync') {
+                el.classList.add('text-info');
+                el.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> ' + msg;
+            } else {
+                el.classList.add('text-secondary');
+                el.innerHTML = msg;
+            }
+        }
+
+        function loadConfigFromLocal() {
+            const saved = localStorage.getItem('ghSyncConfig');
+            if (saved) {
+                ghConfig = { ...ghConfig, ...JSON.parse(saved) };
+            }
+            document.getElementById('gh_owner').value = ghConfig.owner;
+            document.getElementById('gh_repo').value = ghConfig.repo;
+            document.getElementById('gh_token').value = ghConfig.token;
+        }
+
+        function openConfigModal() {
+            loadConfigFromLocal();
+            configModal.show();
+        }
+
+        function saveConfig() {
+            const owner = document.getElementById('gh_owner').value.trim();
+            const repo = document.getElementById('gh_repo').value.trim();
+            const token = document.getElementById('gh_token').value.trim();
+
+            if (!owner || !repo || !token) {
+                alert("Vui lòng điền đủ Tên tài khoản, Tên Repo và Token!");
+                return;
+            }
+
+            ghConfig.owner = owner;
+            ghConfig.repo = repo;
+            ghConfig.token = token;
+            
+            localStorage.setItem('ghSyncConfig', JSON.stringify({
+                owner: owner,
+                repo: repo,
+                token: token
+            }));
+            
+            configModal.hide();
+            fetchDataFromGithub();
+        }
+
+        async function fetchDataFromGithub() {
+            setStatus("Đang tải dữ liệu...", 'sync');
+            showLoading("Đang lấy dữ liệu mới nhất...");
+            
+            const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${ghConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    cache: 'no-store'
+                });
+
+                if (response.status === 404) {
+                    const confirmCreate = confirm("File data.json chưa tồn tại trên Github! Bạn có muốn tạo file trống ngay bây giờ không?");
+                    if (confirmCreate) {
+                        appData = [];
+                        await pushDataToGithub("Khởi tạo file data.json", true);
+                    } else {
+                        hideLoading();
+                        setStatus("Lỗi: Không thấy data.json", 'error');
+                        renderTable();
+                    }
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi xác thực hoặc không tìm thấy Repo (Mã lỗi: ${response.status})`);
+                }
+
+                const data = await response.json();
+                ghConfig.sha = data.sha; 
+                
+                const decodedText = decodeURIComponent(escape(atob(data.content)));
+                
+                const parsedData = JSON.parse(decodedText);
+                
+                if(Array.isArray(parsedData) && parsedData.length === 0) {
+                    setStatus("Chưa có data! Hãy Import.", 'error');
+                    appData = [];
+                } else {
+                    appData = parsedData;
+                    setStatus("Đã tải: " + new Date().toLocaleTimeString(), 'success');
+                }
+                
+                renderTable();
+            } catch (error) {
+                console.error(error);
+                setStatus("Lỗi: Kiểm tra cấu hình!", 'error');
+                alert(error.message);
+                renderTable();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function pushDataToGithub(commitMessage = "Cập nhật dữ liệu tạm ngưng", isNewFile = false) {
+            setStatus("Đang lưu lên Cloud...", 'sync');
+            showLoading("Đang lưu dữ liệu lên Cloud...");
+
+            const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
+            
+            const contentStr = JSON.stringify(appData, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(contentStr)));
+
+            const body = {
+                message: commitMessage,
+                content: encodedContent,
+            };
+            
+            if (!isNewFile && ghConfig.sha) {
+                body.sha = ghConfig.sha;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${ghConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    if(response.status === 409) {
+                        throw new Error("Xung đột phiên bản! Có người khác vừa cập nhật. Hãy 'Tải Lại Cloud' trước.");
+                    }
+                    if(response.status === 422) {
+                        throw new Error("Lỗi SHA (Mã 422). Hãy bấm 'Tải Lại Cloud' để lấy SHA mới nhất rồi thử lại.");
+                    }
+                    throw new Error(`Lỗi cập nhật GitHub (Mã lỗi: ${response.status})`);
+                }
+
+                const responseData = await response.json();
+                ghConfig.sha = responseData.content.sha;
+                
+                setStatus("Đã lưu: " + new Date().toLocaleTimeString(), 'success');
+            } catch (error) {
+                console.error(error);
+                setStatus("Lỗi lưu dữ liệu!", 'error');
+                alert(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function manualSync() {
+            if (!ghConfig.token) {
+                alert("Vui lòng cấu hình GitHub trước!");
+                openConfigModal();
+                return;
+            }
+            fetchDataFromGithub();
+        }
+
+        function importData(event) {
+            if (!ghConfig.token) {
+                alert("Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!");
+                event.target.value = '';
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        const isOverride = confirm("Bạn muốn GHI ĐÈ toàn bộ dữ liệu trên Cloud (OK) hay THÊM VÀO dữ liệu hiện tại (Cancel)?");
+                        if (isOverride) {
+                            appData = imported;
+                        } else {
+                            appData = appData.concat(imported);
+                        }
+                        
+                        renderTable();
+                        await pushDataToGithub(`Import dữ liệu từ file ${file.name}`);
+                        alert("Import và đẩy lên Cloud thành công!");
+                    } else {
+                        alert("File JSON không đúng định dạng mảng (Array).");
+                    }
+                } catch (error) {
+                    alert("Lỗi đọc file JSON: " + error.message);
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function parseFee(feeStr) {
+            if (!feeStr) return 0;
+            const cleaned = feeStr.toString().replace(/[,.\s]/g, ''); 
+            const num = parseFloat(cleaned);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatFee(feeNum) {
+            if (feeNum === 0) return "0";
+            return feeNum.toLocaleString('vi-VN');
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const tfoot = document.getElementById('tableFoot');
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if(appData.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
+                 tfoot.style.display = 'none';
+                 return;
+            }
+
+            let visibleCount = 0;
+            let totalFee = 0;
+
+            appData.forEach((row, index) => {
+                const searchString = Object.values(row).join(' ').toLowerCase();
+                if (searchTerm && !searchString.includes(searchTerm)) {
+                    return; 
+                }
+
+                visibleCount++; // Biến này tự động đếm tăng dần 1, 2, 3...
+                totalFee += parseFee(row.phi);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-center fw-bold text-primary">${visibleCount}</td>
+                    <td>${row.id || ''}</td>
+                    <td>${row.box || ''}</td>
+                    <td><strong>${row.mst || ''}</strong></td>
+                    <td>${row.ten_cty || ''}</td>
+                    <td>${row.khach || ''}</td>
+                    <td>${row.sdt || ''}</td>
+                    <td>${row.ngay || ''}</td>
+                    <td>${row.phi || ''}</td>
+                    <td>${row.ghichu || ''}</td>
+                    <td><span class="badge bg-warning text-dark">${row.trangthai || ''}</span></td>
+                    <td class="action-btns">
+                        <button class="btn btn-sm btn-primary" onclick="editData(${index})" title="Sửa"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteData(${index})" title="Xóa"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            tfoot.style.display = 'table-footer-group';
+            document.getElementById('totalRows').innerText = visibleCount;
+            document.getElementById('totalFee').innerText = formatFee(totalFee);
+            
+            if (visibleCount === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>';
+            }
+        }
+
+        function openModal() {
+            document.getElementById('dataForm').reset();
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('modalTitle').innerText = "Thêm Công Ty Mới";
+            formModal.show();
+        }
+
+        function editData(index) {
+            const row = appData[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').innerText = "Cập Nhật Thông Tin";
+            
+            document.getElementById('id').value = row.id || '';
+            document.getElementById('box').value = row.box || '';
+            document.getElementById('mst').value = row.mst || '';
+            document.getElementById('ten_cty').value = row.ten_cty || '';
+            document.getElementById('khach').value = row.khach || '';
+            document.getElementById('sdt').value = row.sdt || '';
+            document.getElementById('ngay').value = row.ngay || '';
+            document.getElementById('phi').value = row.phi || '';
+            document.getElementById('ghichu').value = row.ghichu || '';
+            document.getElementById('trangthai').value = row.trangthai || '';
+            
+            formModal.show();
+        }
+
+        async function saveForm() {
+            if (!ghConfig.token) {
+                alert("Bạn phải cài đặt cấu hình GitHub thì mới có thể lưu đồng bộ!");
+                return;
+            }
+
+            const mst = document.getElementById('mst').value.trim();
+            const ten_cty = document.getElementById('ten_cty').value.trim();
+            
+            if(!mst || !ten_cty) {
+                alert("Vui lòng nhập Mã Số Thuế và Tên Công Ty!");
+                return;
+            }
+
+            const newData = {
+                id: document.getElementById('id').value,
+                box: document.getElementById('box').value,
+                mst: mst,
+                ten_cty: ten_cty,
+                khach: document.getElementById('khach').value,
+                sdt: document.getElementById('sdt').value,
+                ngay: document.getElementById('ngay').value,
+                phi: document.getElementById('phi').value,
+                ghichu: document.getElementById('ghichu').value,
+                trangthai: document.getElementById('trangthai').value
+            };
+
+            const editIndex = document.getElementById('editIndex').value;
+            let actionName = "";
+            
+            if (editIndex == -1) {
+                appData.push(newData);
+                actionName = `Thêm mới MST: ${mst}`;
+            } else {
+                appData[editIndex] = newData;
+                actionName = `Cập nhật MST: ${mst}`;
+            }
+
+            formModal.hide();
+            renderTable();
+            await pushDataToGithub(actionName);
+        }
+
+        async function deleteData(index) {
+            if (!ghConfig.token) {
+                alert("Bạn phải cài đặt cấu hình GitHub thì mới có thể thực hiện thao tác này!");
+                return;
+            }
+
+            if (confirm("Bạn có chắc chắn muốn xóa dòng này? Sẽ xóa vĩnh viễn trên Cloud!")) {
+                const deletedMst = appData[index].mst;
+                appData.splice(index, 1);
+                renderTable();
+                await pushDataToGithub(`Xóa MST: ${deletedMst}`);
+            }
+        }
+        
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_tamngung_cloud_${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
