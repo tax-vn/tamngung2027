@@ -23,9 +23,7 @@
             --soft-shadow: 0 10px 20px rgba(37, 99, 235, 0.08);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         html, body {
             margin: 0;
@@ -35,9 +33,7 @@
             color: var(--secondary);
         }
 
-        body {
-            min-height: 100vh;
-        }
+        body { min-height: 100vh; }
 
         .app-shell {
             max-width: 1460px;
@@ -46,24 +42,24 @@
         }
 
         .topbar {
+            position: sticky;
+            top: 12px;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
             padding: 18px 22px;
-            background: rgba(255, 255, 255, 0.72);
+            background: rgba(255, 255, 255, 0.92);
             border: 1px solid var(--border);
             border-radius: 22px;
-            backdrop-filter: blur(8px);
-            box-shadow: var(--soft-shadow);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
             margin-bottom: 22px;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .brand { display: flex; align-items: center; gap: 16px; }
 
         .brand-mark {
             width: 56px;
@@ -94,12 +90,7 @@
             color: var(--secondary);
         }
 
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .top-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
         .live-clock {
             background: linear-gradient(135deg, #ffffff, #f8fafc);
@@ -123,10 +114,7 @@
             transition: 0.2s ease;
         }
 
-        .glass-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 22px rgba(15, 23, 42, 0.08);
-        }
+        .glass-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(15, 23, 42, 0.08); }
 
         .stats-grid {
             display: grid;
@@ -171,17 +159,9 @@
             color: var(--secondary);
         }
 
-        .stat-value.text-primary {
-            color: var(--primary);
-        }
-
-        .stat-value.text-success {
-            color: var(--success);
-        }
-
-        .stat-value.text-warning {
-            color: var(--warning);
-        }
+        .stat-value.text-primary { color: var(--primary); }
+        .stat-value.text-success { color: var(--success); }
+        .stat-value.text-warning { color: var(--warning); }
 
         .toolbar {
             display: flex;
@@ -197,30 +177,10 @@
             box-shadow: var(--soft-shadow);
         }
 
-        .toolbar-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .toolbar .btn {
-            border-radius: 12px;
-            font-weight: 700;
-            padding: 0.72rem 1rem;
-        }
-
-        .toolbar .input-group {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(37,99,235,.08);
-        }
-
-        .toolbar .input-group .btn {
-            margin: 0;
-            border-radius: 0;
-        }
-
+        .toolbar-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .toolbar .btn { border-radius: 12px; font-weight: 700; padding: 0.72rem 1rem; }
+        .toolbar .input-group { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(37,99,235,.08); }
+        .toolbar .input-group .btn { margin: 0; border-radius: 0; }
         .toolbar .input-group-text {
             background: rgba(255,255,255,0.9);
             border: 1px solid rgba(148,163,184,0.25);
@@ -229,7 +189,6 @@
             min-width: 220px;
             justify-content: center;
         }
-
         .toolbar .form-control {
             min-width: 260px;
             border-radius: 12px;
@@ -245,7 +204,7 @@
             border-radius: 22px;
             box-shadow: var(--shadow);
             padding: 18px 18px 10px;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .table-headbar {
@@ -257,14 +216,7 @@
             flex-wrap: wrap;
         }
 
-        .table-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.08rem;
-            font-weight: 800;
-            color: var(--secondary);
-        }
+        .table-title { display: flex; align-items: center; gap: 10px; font-size: 1.08rem; font-weight: 800; color: var(--secondary); }
 
         .status-pill {
             display: inline-flex;
@@ -279,17 +231,29 @@
         }
 
         .table-container {
+            width: 100%;
+            max-width: 100%;
             background: white;
             border: 1px solid rgba(148,163,184,0.18);
             border-radius: 18px;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 #e2e8f0;
         }
 
+        .table-container::-webkit-scrollbar { height: 10px; }
+        .table-container::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 999px; }
+        .table-container::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 999px; }
+        .table-container::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
         #dataTable {
+            width: max-content;
+            min-width: 1200px;
             margin: 0;
             border-collapse: separate;
             border-spacing: 0;
-            min-width: 1200px;
         }
 
         #dataTable thead th {
@@ -306,49 +270,14 @@
             z-index: 2;
         }
 
-        #dataTable tbody td {
-            padding: 12px 12px;
-            border-bottom: 1px solid rgba(148,163,184,0.18);
-            vertical-align: middle;
-            font-size: 0.92rem;
-            color: #1f2937;
-        }
+        #dataTable tbody td { padding: 12px; border-bottom: 1px solid rgba(148,163,184,0.18); vertical-align: middle; font-size: 0.92rem; color: #1f2937; }
+        #dataTable tbody tr:nth-child(even) { background: rgba(248,250,252,0.7); }
+        #dataTable tbody tr:hover { background: rgba(219,234,254,0.45); }
 
-        #dataTable tbody tr:nth-child(even) {
-            background: rgba(248,250,252,0.7);
-        }
-
-        #dataTable tbody tr:hover {
-            background: rgba(219,234,254,0.45);
-        }
-
-        .summary-row {
-            background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
-            font-weight: 700;
-        }
-
-        .summary-row td {
-            padding: 14px 12px;
-            border-top: 1px solid rgba(96, 165, 250, 0.2);
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-        }
-
-        .action-btns .btn {
-            border-radius: 10px;
-            width: 38px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
+        .summary-row { background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%); font-weight: 700; }
+        .summary-row td { padding: 14px 12px; border-top: 1px solid rgba(96, 165, 250, 0.2); }
+        .action-btns { display: flex; gap: 8px; align-items: center; justify-content: center; white-space: nowrap; }
+        .action-btns .btn { border-radius: 10px; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
 
         .badge-status {
             display: inline-flex;
@@ -364,13 +293,8 @@
             border: 1px solid rgba(245,158,11,0.18);
         }
 
-        .summary-row .text-danger {
-            color: var(--danger) !important;
-        }
-
-        .summary-row .text-primary {
-            color: var(--primary) !important;
-        }
+        .summary-row .text-danger { color: var(--danger) !important; }
+        .summary-row .text-primary { color: var(--primary) !important; }
 
         #loadingOverlay {
             position: fixed;
@@ -384,113 +308,33 @@
             backdrop-filter: blur(4px);
         }
 
-        #loadingText {
-            margin-top: 18px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .spinner-border {
-            width: 3.2rem;
-            height: 3.2rem;
-            border-width: 0.28rem;
-        }
-
-        .modal-content {
-            border: none;
-            border-radius: 22px;
-            box-shadow: 0 28px 70px rgba(15, 23, 42, 0.18);
-        }
-
-        .modal-header {
-            border-bottom: none;
-            padding: 1.2rem 1.2rem 0.5rem;
-        }
-
-        .modal-title {
-            font-weight: 800;
-        }
-
-        .modal-body {
-            padding: 0.8rem 1.2rem 1rem;
-        }
-
-        .form-control, .form-select {
-            border-radius: 12px;
-            border: 1px solid rgba(148,163,184,0.4);
-            padding: 0.72rem 0.8rem;
-            background: rgba(248,250,252,0.8);
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: rgba(37,99,235,0.75);
-            box-shadow: 0 0 0 0.2rem rgba(37,99,235,0.12);
-        }
-
-        .form-label {
-            font-weight: 700;
-            font-size: 0.88rem;
-            color: #334155;
-            margin-bottom: 0.45rem;
-        }
-
-        .alert-info {
-            border-radius: 14px;
-        }
+        #loadingText { margin-top: 18px; font-weight: 800; color: var(--primary); }
+        .spinner-border { width: 3.2rem; height: 3.2rem; border-width: 0.28rem; }
+        .modal-content { border: none; border-radius: 22px; box-shadow: 0 28px 70px rgba(15, 23, 42, 0.18); }
+        .modal-header { border-bottom: none; padding: 1.2rem 1.2rem 0.5rem; }
+        .modal-title { font-weight: 800; }
+        .modal-body { padding: 0.8rem 1.2rem 1rem; }
+        .form-control, .form-select { border-radius: 12px; border: 1px solid rgba(148,163,184,0.4); padding: 0.72rem 0.8rem; background: rgba(248,250,252,0.8); }
+        .form-control:focus, .form-select:focus { border-color: rgba(37,99,235,0.75); box-shadow: 0 0 0 0.2rem rgba(37,99,235,0.12); }
+        .form-label { font-weight: 700; font-size: 0.88rem; color: #334155; margin-bottom: 0.45rem; }
+        .alert-info { border-radius: 14px; }
 
         @media (max-width: 1100px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, minmax(180px, 1fr));
-            }
+            .stats-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
         }
 
         @media (max-width: 768px) {
-            .app-shell {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .topbar {
-                align-items: flex-start;
-                padding: 16px 16px;
-            }
-
-            .topbar, .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .brand, .top-actions, .toolbar-group {
-                width: 100%;
-            }
-
-            .brand {
-                justify-content: center;
-                text-align: center;
-                flex-direction: column;
-            }
-
-            .top-actions {
-                justify-content: center;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .toolbar .form-control {
-                min-width: unset;
-                width: 100%;
-            }
-
-            .toolbar .ms-auto {
-                width: 100%;
-                margin-left: 0 !important;
-            }
-
-            .content-panel {
-                padding: 14px 12px 8px;
-            }
+            .app-shell { padding: 12px 10px 28px; }
+            .topbar { top: 8px; align-items: flex-start; padding: 16px; }
+            .topbar, .toolbar { flex-direction: column; align-items: stretch; }
+            .brand, .top-actions, .toolbar-group { width: 100%; }
+            .brand { justify-content: center; text-align: center; flex-direction: column; }
+            .top-actions { justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .toolbar .form-control { min-width: unset; width: 100%; }
+            .toolbar .ms-auto { width: 100%; margin-left: 0 !important; }
+            .content-panel { padding: 14px 10px 8px; }
+            .table-container { border-radius: 14px; }
         }
     </style>
 </head>
@@ -512,54 +356,28 @@
 
             <div class="top-actions">
                 <span id="liveClock" class="live-clock"><i class="far fa-clock"></i> --:--:--</span>
-                <button class="btn glass-btn" onclick="openConfigModal()">
-                    <i class="fas fa-cog"></i> Cài Đặt GitHub
-                </button>
+                <button class="btn glass-btn" onclick="openConfigModal"><i class="fas fa-cog"></i> Cài Đặt GitHub</button>
             </div>
         </header>
 
         <section class="stats-grid">
-            <div class="stat-card">
-                <p class="stat-label">Tổng dòng</p>
-                <p class="stat-value text-primary" id="stat-totalRows">0</p>
-            </div>
-            <div class="stat-card">
-                <p class="stat-label">Tổng phí</p>
-                <p class="stat-value text-danger" id="stat-totalFee">0</p>
-            </div>
-            <div class="stat-card">
-                <p class="stat-label">Trạng thái</p>
-                <p class="stat-value text-success" id="stat-statusText">Chưa cấu hình</p>
-            </div>
-            <div class="stat-card">
-                <p class="stat-label">Bộ lọc</p>
-                <p class="stat-value text-warning" id="stat-filterText">Tất cả</p>
-            </div>
+            <div class="stat-card"><p class="stat-label">Tổng dòng</p><p class="stat-value text-primary" id="stat-totalRows">0</p></div>
+            <div class="stat-card"><p class="stat-label">Tổng phí</p><p class="stat-value text-danger" id="stat-totalFee">0</p></div>
+            <div class="stat-card"><p class="stat-label">Trạng thái</p><p class="stat-value text-success" id="stat-statusText">Chưa cấu hình</p></div>
+            <div class="stat-card"><p class="stat-label">Bộ lọc</p><p class="stat-value text-warning" id="stat-filterText">Tất cả</p></div>
         </section>
 
         <div class="toolbar">
             <div class="toolbar-group">
                 <button class="btn btn-success" onclick="openModal()"><i class="fas fa-plus"></i> Thêm mới</button>
-
                 <div class="input-group">
-                    <button class="btn btn-info text-white fw-bold" onclick="manualSync()">
-                        <i class="fas fa-sync"></i> Tải lại Cloud
-                    </button>
-                    <span id="syncStatus" class="input-group-text" style="font-size: 0.9rem; font-weight: bold;">
-                        Chưa cấu hình
-                    </span>
+                    <button class="btn btn-info text-white fw-bold" onclick="manualSync"><i class="fas fa-sync"></i> Tải lại Cloud</button>
+                    <span id="syncStatus" class="input-group-text" style="font-size: 0.9rem; font-weight: bold;">Chưa cấu hình</span>
                 </div>
-
                 <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Backup Local</button>
-                <label class="btn btn-warning mb-0 text-dark fw-bold">
-                    <i class="fas fa-upload"></i> Import & Đẩy lên Cloud
-                    <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
-                </label>
+                <label class="btn btn-warning mb-0 text-dark fw-bold"><i class="fas fa-upload"></i> Import & Đẩy lên Cloud<input type="file" accept=".json" style="display: none;" onchange="importData(event)"></label>
             </div>
-
-            <div class="toolbar-group ms-auto" style="width: 320px; max-width: 100%;">
-                <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()">
-            </div>
+            <div class="toolbar-group ms-auto" style="width: 320px; max-width: 100%;"><input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Tìm kiếm theo MST, Tên Cty, Khách..." onkeyup="renderTable()"></div>
         </div>
 
         <main class="content-panel">
@@ -567,574 +385,187 @@
                 <div class="table-title"><i class="fas fa-table text-primary"></i> Dữ liệu công ty</div>
                 <span class="status-pill"><i class="fas fa-circle-notch fa-spin"></i> Sẵn sàng</span>
             </div>
-
-            <div class="table-container table-responsive">
+            <div class="table-container">
                 <table class="table table-striped table-hover table-bordered align-middle" id="dataTable">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>STT</th>
-                            <th>ID</th>
-                            <th>Box</th>
-                            <th>Mã Số Thuế</th>
-                            <th>Tên Công Ty</th>
-                            <th>Khách</th>
-                            <th>SĐT</th>
-                            <th>Ngày</th>
-                            <th>Phí</th>
-                            <th>Ghi Chú</th>
-                            <th>Trạng Thái</th>
-                            <th>Hành Động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr>
-                    </tbody>
-                    <tfoot id="tableFoot" style="display: none;">
-                        <tr class="summary-row">
-                            <td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td>
-                            <td id="totalRows" class="text-primary fs-5">0</td>
-                            <td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td>
-                            <td id="totalFee" class="text-danger fs-5" colspan="4">0</td>
-                        </tr>
-                    </tfoot>
+                    <thead class="table-dark"><tr><th>STT</th><th>ID</th><th>Box</th><th>Mã Số Thuế</th><th>Tên Công Ty</th><th>Khách</th><th>SĐT</th><th>Ngày</th><th>Phí</th><th>Ghi Chú</th><th>Trạng Thái</th><th>Hành Động</th></tr></thead>
+                    <tbody id="tableBody"><tr><td colspan="12" class="text-center">Vui lòng cấu hình GitHub hoặc đợi tải dữ liệu...</td></tr></tbody>
+                    <tfoot id="tableFoot" style="display: none;"><tr class="summary-row"><td colspan="3" class="text-end"><strong>Tổng số dòng:</strong></td><td id="totalRows" class="text-primary fs-5">0</td><td colspan="4" class="text-end"><strong>Tổng Tiền Phí:</strong></td><td id="totalFee" class="text-danger fs-5" colspan="4">0</td></tr></tfoot>
                 </table>
             </div>
         </main>
     </div>
 
     <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle">Thêm Mới</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="dataForm">
-                <input type="hidden" id="editIndex" value="-1">
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label class="form-label">ID</label>
-                        <input type="text" class="form-control" id="id">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label class="form-label">Box</label>
-                        <input type="text" class="form-control" id="box">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Mã Số Thuế <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="mst" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Tên Công Ty <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="ten_cty" required>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Khách</label>
-                        <input type="text" class="form-control" id="khach">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">SĐT</label>
-                        <input type="text" class="form-control" id="sdt">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Ngày</label>
-                        <input type="text" class="form-control" id="ngay" placeholder="YYYY-MM-DD">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Phí</label>
-                        <input type="text" class="form-control" id="phi">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Ghi Chú</label>
-                        <input type="text" class="form-control" id="ghichu">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Trạng Thái (Tạm Ngưng)</label>
-                    <input type="text" class="form-control" id="trangthai">
-                </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary" onclick="saveForm()">Lưu & Cập Nhật Cloud</button>
-          </div>
-        </div>
-      </div>
+      <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalTitle">Thêm Mới</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><form id="dataForm"><input type="hidden" id="editIndex" value="-1"><div class="row"><div class="col-md-3 mb-3"><label class="form-label">ID</label><input type="text" class="form-control" id="id"></div><div class="col-md-3 mb-3"><label class="form-label">Box</label><input type="text" class="form-control" id="box"></div><div class="col-md-6 mb-3"><label class="form-label">Mã Số Thuế <span class="text-danger">*</span></label><input type="text" class="form-control" id="mst" required></div></div><div class="mb-3"><label class="form-label">Tên Công Ty <span class="text-danger">*</span></label><input type="text" class="form-control" id="ten_cty" required></div><div class="row"><div class="col-md-6 mb-3"><label class="form-label">Khách</label><input type="text" class="form-control" id="khach"></div><div class="col-md-6 mb-3"><label class="form-label">SĐT</label><input type="text" class="form-control" id="sdt"></div></div><div class="row"><div class="col-md-4 mb-3"><label class="form-label">Ngày</label><input type="text" class="form-control" id="ngay" placeholder="YYYY-MM-DD"></div><div class="col-md-4 mb-3"><label class="form-label">Phí</label><input type="text" class="form-control" id="phi"></div><div class="col-md-4 mb-3"><label class="form-label">Ghi Chú</label><input type="text" class="form-control" id="ghichu"></div></div><div class="mb-3"><label class="form-label">Trạng Thái (Tạm Ngưng)</label><input type="text" class="form-control" id="trangthai"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button type="button" class="btn btn-primary" onclick="saveForm()">Lưu & Cập Nhật Cloud</button></div></div></div>
     </div>
 
-    <div class="modal fade" id="configModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-              <h5 class="modal-title"><i class="fab fa-github"></i> Cài Đặt Kết Nối GitHub</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-info small">
-                    Thông tin này được lưu cục bộ trên trình duyệt của máy bạn, không bị chia sẻ ra ngoài.
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Tên Tài Khoản GitHub (Owner) <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="gh_owner" placeholder="vd: nguyenvana" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Tên Kho Lưu Trữ (Repo) <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="gh_repo" placeholder="vd: quan-ly-tam-ngung" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Personal Access Token (PAT) <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" id="gh_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Tên File Dữ Liệu</label>
-                    <input type="text" class="form-control" id="gh_file" value="data.json" readonly>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-              <button type="button" class="btn btn-primary" onclick="saveConfig()">Lưu Cấu Hình & Tải Dữ Liệu</button>
-            </div>
-          </div>
-        </div>
-    </div>
+    <div class="modal fade" id="configModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title"><i class="fab fa-github"></i> Cài Đặt Kết Nối GitHub</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="alert alert-info small">Thông tin này được lưu cục bộ trên trình duyệt của máy bạn, không bị chia sẻ ra ngoài.</div><div class="mb-3"><label class="form-label">Tên Tài Khoản GitHub (Owner) <span class="text-danger">*</span></label><input type="text" class="form-control" id="gh_owner" placeholder="vd: nguyenvana" required></div><div class="mb-3"><label class="form-label">Tên Kho Lưu Trữ (Repo) <span class="text-danger">*</span></label><input type="text" class="form-control" id="gh_repo" placeholder="vd: quan-ly-tam-ngung" required></div><div class="mb-3"><label class="form-label">Personal Access Token (PAT) <span class="text-danger">*</span></label><input type="password" class="form-control" id="gh_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required></div><div class="mb-3"><label class="form-label">Tên File Dữ Liệu</label><input type="text" class="form-control" id="gh_file" value="data.json" readonly></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button type="button" class="btn btn-primary" onclick="saveConfig()">Lưu Cấu Hình & Tải Dữ Liệu</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let appData = [];
         let formModal, configModal;
-
-        let ghConfig = {
-            owner: '',
-            repo: '',
-            token: '',
-            path: 'data.json',
-            sha: ''
-        };
+        let ghConfig = { owner: '', repo: '', token: '', path: 'data.json', sha: '' };
 
         setInterval(() => {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('vi-VN');
-            const dateStr = now.toLocaleDateString('vi-VN');
             const clockEl = document.getElementById('liveClock');
-            if (clockEl) clockEl.innerHTML = `<i class="far fa-clock"></i> ${timeStr} - ${dateStr}`;
+            if (clockEl) clockEl.innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleTimeString('vi-VN')} - ${now.toLocaleDateString('vi-VN')}`;
         }, 1000);
 
         window.onload = function() {
             formModal = new bootstrap.Modal(document.getElementById('formModal'));
             configModal = new bootstrap.Modal(document.getElementById('configModal'));
-
             loadConfigFromLocal();
-
-            if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
-                fetchDataFromGithub();
-            } else {
-                setStatus('Chưa cấu hình', 'error');
-                renderTable();
-            }
+            if (ghConfig.token && ghConfig.owner && ghConfig.repo) fetchDataFromGithub();
+            else { setStatus('Chưa cấu hình', 'error'); renderTable(); }
         };
 
-        function showLoading(text = 'Đang đồng bộ...') {
-            document.getElementById('loadingText').innerText = text;
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
+        function showLoading(text = 'Đang đồng bộ...') { document.getElementById('loadingText').innerText = text; document.getElementById('loadingOverlay').style.display = 'flex'; }
+        function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
 
         function setStatus(msg, type) {
             const el = document.getElementById('syncStatus');
             el.className = 'input-group-text bg-white ';
-            if (type === 'success') {
-                el.classList.add('text-success');
-                el.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + msg;
-            } else if (type === 'error') {
-                el.classList.add('text-danger');
-                el.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> ' + msg;
-            } else if (type === 'sync') {
-                el.classList.add('text-info');
-                el.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> ' + msg;
-            } else {
-                el.classList.add('text-secondary');
-                el.innerHTML = msg;
-            }
-
+            if (type === 'success') { el.classList.add('text-success'); el.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + msg; }
+            else if (type === 'error') { el.classList.add('text-danger'); el.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> ' + msg; }
+            else if (type === 'sync') { el.classList.add('text-info'); el.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> ' + msg; }
+            else { el.classList.add('text-secondary'); el.innerHTML = msg; }
             const statStatus = document.getElementById('stat-statusText');
-            if (statStatus) {
-                statStatus.textContent = msg;
-                statStatus.className = 'stat-value ' + (type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : type === 'sync' ? 'text-primary' : 'text-warning');
-            }
+            if (statStatus) { statStatus.textContent = msg; statStatus.className = 'stat-value ' + (type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : type === 'sync' ? 'text-primary' : 'text-warning'); }
         }
 
         function loadConfigFromLocal() {
             const saved = localStorage.getItem('ghSyncConfig');
-            if (saved) {
-                ghConfig = { ...ghConfig, ...JSON.parse(saved) };
-            }
+            if (saved) ghConfig = { ...ghConfig, ...JSON.parse(saved) };
             document.getElementById('gh_owner').value = ghConfig.owner;
             document.getElementById('gh_repo').value = ghConfig.repo;
             document.getElementById('gh_token').value = ghConfig.token;
         }
 
-        function openConfigModal() {
-            loadConfigFromLocal();
-            configModal.show();
-        }
+        function openConfigModal() { loadConfigFromLocal(); configModal.show(); }
 
         function saveConfig() {
             const owner = document.getElementById('gh_owner').value.trim();
             const repo = document.getElementById('gh_repo').value.trim();
             const token = document.getElementById('gh_token').value.trim();
-
-            if (!owner || !repo || !token) {
-                alert('Vui lòng điền đủ Tên tài khoản, Tên Repo và Token!');
-                return;
-            }
-
-            ghConfig.owner = owner;
-            ghConfig.repo = repo;
-            ghConfig.token = token;
-
-            localStorage.setItem('ghSyncConfig', JSON.stringify({
-                owner: owner,
-                repo: repo,
-                token: token
-            }));
-
-            configModal.hide();
-            fetchDataFromGithub();
+            if (!owner || !repo || !token) { alert('Vui lòng điền đủ Tên tài khoản, Tên Repo và Token!'); return; }
+            ghConfig.owner = owner; ghConfig.repo = repo; ghConfig.token = token;
+            localStorage.setItem('ghSyncConfig', JSON.stringify({ owner, repo, token }));
+            configModal.hide(); fetchDataFromGithub();
         }
 
         async function fetchDataFromGithub() {
-            setStatus('Đang tải dữ liệu...', 'sync');
-            showLoading('Đang lấy dữ liệu mới nhất...');
-
+            setStatus('Đang tải dữ liệu...', 'sync'); showLoading('Đang lấy dữ liệu mới nhất...');
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
-
             try {
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `token ${ghConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    cache: 'no-store'
-                });
-
+                const response = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}`, 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
                 if (response.status === 404) {
                     const confirmCreate = confirm('File data.json chưa tồn tại trên Github! Bạn có muốn tạo file trống ngay bây giờ không?');
-                    if (confirmCreate) {
-                        appData = [];
-                        await pushDataToGithub('Khởi tạo file data.json', true);
-                    } else {
-                        hideLoading();
-                        setStatus('Lỗi: Không thấy data.json', 'error');
-                        renderTable();
-                    }
+                    if (confirmCreate) { appData = []; await pushDataToGithub('Khởi tạo file data.json', true); }
+                    else { hideLoading(); setStatus('Lỗi: Không thấy data.json', 'error'); renderTable(); }
                     return;
                 }
-
-                if (!response.ok) {
-                    throw new Error(`Lỗi xác thực hoặc không tìm thấy Repo (Mã lỗi: ${response.status})`);
-                }
-
+                if (!response.ok) throw new Error(`Lỗi xác thực hoặc không tìm thấy Repo (Mã lỗi: ${response.status})`);
                 const data = await response.json();
                 ghConfig.sha = data.sha;
-
-                const decodedText = decodeURIComponent(escape(atob(data.content)));
-                const parsedData = JSON.parse(decodedText);
-
-                if (Array.isArray(parsedData) && parsedData.length === 0) {
-                    setStatus('Chưa có data! Hãy Import.', 'error');
-                    appData = [];
-                } else {
-                    appData = parsedData;
-                    setStatus('Đã tải: ' + new Date().toLocaleTimeString(), 'success');
-                }
-
+                const parsedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                if (Array.isArray(parsedData) && parsedData.length === 0) { setStatus('Chưa có data! Hãy Import.', 'error'); appData = []; }
+                else { appData = parsedData; setStatus('Đã tải: ' + new Date().toLocaleTimeString(), 'success'); }
                 renderTable();
-            } catch (error) {
-                console.error(error);
-                setStatus('Lỗi: Kiểm tra cấu hình!', 'error');
-                alert(error.message);
-                renderTable();
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { console.error(error); setStatus('Lỗi: Kiểm tra cấu hình!', 'error'); alert(error.message); renderTable(); }
+            finally { hideLoading(); }
         }
 
         async function pushDataToGithub(commitMessage = 'Cập nhật dữ liệu tạm ngưng', isNewFile = false) {
-            setStatus('Đang lưu lên Cloud...', 'sync');
-            showLoading('Đang lưu dữ liệu lên Cloud...');
-
+            setStatus('Đang lưu lên Cloud...', 'sync'); showLoading('Đang lưu dữ liệu lên Cloud...');
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
-
-            const contentStr = JSON.stringify(appData, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(contentStr)));
-
-            const body = {
-                message: commitMessage,
-                content: encodedContent,
-            };
-
-            if (!isNewFile && ghConfig.sha) {
-                body.sha = ghConfig.sha;
-            }
-
+            const body = { message: commitMessage, content: btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2)))) };
+            if (!isNewFile && ghConfig.sha) body.sha = ghConfig.sha;
             try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${ghConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-
+                const response = await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${ghConfig.token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                 if (!response.ok) {
-                    if(response.status === 409) {
-                        throw new Error('Xung đột phiên bản! Có người khác vừa cập nhật. Hãy \'Tải Lại Cloud\' trước.');
-                    }
-                    if(response.status === 422) {
-                        throw new Error('Lỗi SHA (Mã 422). Hãy bấm \'Tải Lại Cloud\' để lấy SHA mới nhất rồi thử lại.');
-                    }
+                    if (response.status === 409) throw new Error("Xung đột phiên bản! Có người khác vừa cập nhật. Hãy 'Tải Lại Cloud' trước.");
+                    if (response.status === 422) throw new Error("Lỗi SHA (Mã 422). Hãy bấm 'Tải Lại Cloud' để lấy SHA mới nhất rồi thử lại.");
                     throw new Error(`Lỗi cập nhật GitHub (Mã lỗi: ${response.status})`);
                 }
-
-                const responseData = await response.json();
-                ghConfig.sha = responseData.content.sha;
-                setStatus('Đã lưu: ' + new Date().toLocaleTimeString(), 'success');
-            } catch (error) {
-                console.error(error);
-                setStatus('Lỗi lưu dữ liệu!', 'error');
-                alert(error.message);
-            } finally {
-                hideLoading();
-            }
+                const responseData = await response.json(); ghConfig.sha = responseData.content.sha; setStatus('Đã lưu: ' + new Date().toLocaleTimeString(), 'success');
+            } catch (error) { console.error(error); setStatus('Lỗi lưu dữ liệu!', 'error'); alert(error.message); }
+            finally { hideLoading(); }
         }
 
-        function manualSync() {
-            if (!ghConfig.token) {
-                alert('Vui lòng cấu hình GitHub trước!');
-                openConfigModal();
-                return;
-            }
-            fetchDataFromGithub();
-        }
+        function manualSync() { if (!ghConfig.token) { alert('Vui lòng cấu hình GitHub trước!'); openConfigModal(); return; } fetchDataFromGithub(); }
 
         function importData(event) {
-            if (!ghConfig.token) {
-                alert('Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!');
-                event.target.value = '';
-                return;
-            }
-
-            const file = event.target.files[0];
-            if (!file) return;
-
+            if (!ghConfig.token) { alert('Bạn phải cài đặt GitHub trước khi Import đẩy lên Cloud!'); event.target.value = ''; return; }
+            const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        const isOverride = confirm('Bạn muốn GHI ĐÈ toàn bộ dữ liệu trên Cloud (OK) hay THÊM VÀO dữ liệu hiện tại (Cancel)?');
-                        if (isOverride) {
-                            appData = imported;
-                        } else {
-                            appData = appData.concat(imported);
-                        }
-
-                        renderTable();
-                        await pushDataToGithub(`Import dữ liệu từ file ${file.name}`);
-                        alert('Import và đẩy lên Cloud thành công!');
-                    } else {
-                        alert('File JSON không đúng định dạng mảng (Array).');
-                    }
-                } catch (error) {
-                    alert('Lỗi đọc file JSON: ' + error.message);
-                }
+                    if (!Array.isArray(imported)) { alert('File JSON không đúng định dạng mảng (Array).'); return; }
+                    if (confirm('Bạn muốn GHI ĐÈ toàn bộ dữ liệu trên Cloud (OK) hay THÊM VÀO dữ liệu hiện tại (Cancel)?')) appData = imported;
+                    else appData = appData.concat(imported);
+                    renderTable(); await pushDataToGithub(`Import dữ liệu từ file ${file.name}`); alert('Import và đẩy lên Cloud thành công!');
+                } catch (error) { alert('Lỗi đọc file JSON: ' + error.message); }
                 event.target.value = '';
             };
             reader.readAsText(file);
         }
 
-        function parseFee(feeStr) {
-            if (!feeStr) return 0;
-            const cleaned = feeStr.toString().replace(/[,\.\s]/g, '');
-            const num = parseFloat(cleaned);
-            return isNaN(num) ? 0 : num;
-        }
-
-        function formatFee(feeNum) {
-            if (feeNum === 0) return '0';
-            return feeNum.toLocaleString('vi-VN');
-        }
+        function parseFee(feeStr) { if (!feeStr) return 0; const num = parseFloat(feeStr.toString().replace(/[,\.\s]/g, '')); return isNaN(num) ? 0 : num; }
+        function formatFee(feeNum) { return feeNum === 0 ? '0' : feeNum.toLocaleString('vi-VN'); }
 
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             const tfoot = document.getElementById('tableFoot');
             tbody.innerHTML = '';
-
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filterText = document.getElementById('stat-filterText');
-            if (filterText) {
-                filterText.textContent = searchTerm ? 'Đang lọc' : 'Tất cả';
-            }
-
+            document.getElementById('stat-filterText').textContent = searchTerm ? 'Đang lọc' : 'Tất cả';
             if (appData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="12" class="text-center text-danger fw-bold">Không có dữ liệu! Hãy Import File.</td></tr>';
-                tfoot.style.display = 'none';
-                document.getElementById('stat-totalRows').innerText = '0';
-                document.getElementById('stat-totalFee').innerText = '0';
-                return;
+                tfoot.style.display = 'none'; document.getElementById('stat-totalRows').innerText = '0'; document.getElementById('stat-totalFee').innerText = '0'; return;
             }
-
-            let visibleCount = 0;
-            let totalFee = 0;
-
+            let visibleCount = 0; let totalFee = 0;
             appData.forEach((row, index) => {
-                const searchString = Object.values(row).join(' ').toLowerCase();
-                if (searchTerm && !searchString.includes(searchTerm)) {
-                    return;
-                }
-
-                visibleCount++;
-                totalFee += parseFee(row.phi);
-
+                if (searchTerm && !Object.values(row).join(' ').toLowerCase().includes(searchTerm)) return;
+                visibleCount++; totalFee += parseFee(row.phi);
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="text-center fw-bold text-primary">${visibleCount}</td>
-                    <td>${row.id || ''}</td>
-                    <td>${row.box || ''}</td>
-                    <td><strong>${row.mst || ''}</strong></td>
-                    <td>${row.ten_cty || ''}</td>
-                    <td>${row.khach || ''}</td>
-                    <td>${row.sdt || ''}</td>
-                    <td>${row.ngay || ''}</td>
-                    <td>${row.phi || ''}</td>
-                    <td>${row.ghichu || ''}</td>
-                    <td><span class="badge-status">${row.trangthai || ''}</span></td>
-                    <td class="action-btns">
-                        <button class="btn btn-sm btn-primary" onclick="editData(${index})" title="Sửa"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteData(${index})" title="Xóa"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
+                tr.innerHTML = `<td class="text-center fw-bold text-primary">${visibleCount}</td><td>${row.id || ''}</td><td>${row.box || ''}</td><td><strong>${row.mst || ''}</strong></td><td>${row.ten_cty || ''}</td><td>${row.khach || ''}</td><td>${row.sdt || ''}</td><td>${row.ngay || ''}</td><td>${row.phi || ''}</td><td>${row.ghichu || ''}</td><td><span class="badge-status">${row.trangthai || ''}</span></td><td class="action-btns"><button class="btn btn-sm btn-primary" onclick="editData(${index})" title="Sửa"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteData(${index})" title="Xóa"><i class="fas fa-trash"></i></button></td>`;
                 tbody.appendChild(tr);
             });
-
             tfoot.style.display = 'table-footer-group';
-            document.getElementById('totalRows').innerText = visibleCount;
-            document.getElementById('totalFee').innerText = formatFee(totalFee);
-            document.getElementById('stat-totalRows').innerText = visibleCount;
-            document.getElementById('stat-totalFee').innerText = formatFee(totalFee);
-
-            if (visibleCount === 0) {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>';
-            }
+            document.getElementById('totalRows').innerText = visibleCount; document.getElementById('totalFee').innerText = formatFee(totalFee);
+            document.getElementById('stat-totalRows').innerText = visibleCount; document.getElementById('stat-totalFee').innerText = formatFee(totalFee);
+            if (visibleCount === 0) tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted">Không tìm thấy kết quả nào phù hợp.</td></tr>';
         }
 
-        function openModal() {
-            document.getElementById('dataForm').reset();
-            document.getElementById('editIndex').value = -1;
-            document.getElementById('modalTitle').innerText = 'Thêm Công Ty Mới';
-            formModal.show();
-        }
+        function openModal() { document.getElementById('dataForm').reset(); document.getElementById('editIndex').value = -1; document.getElementById('modalTitle').innerText = 'Thêm Công Ty Mới'; formModal.show(); }
 
         function editData(index) {
-            const row = appData[index];
-            document.getElementById('editIndex').value = index;
-            document.getElementById('modalTitle').innerText = 'Cập Nhật Thông Tin';
-
-            document.getElementById('id').value = row.id || '';
-            document.getElementById('box').value = row.box || '';
-            document.getElementById('mst').value = row.mst || '';
-            document.getElementById('ten_cty').value = row.ten_cty || '';
-            document.getElementById('khach').value = row.khach || '';
-            document.getElementById('sdt').value = row.sdt || '';
-            document.getElementById('ngay').value = row.ngay || '';
-            document.getElementById('phi').value = row.phi || '';
-            document.getElementById('ghichu').value = row.ghichu || '';
-            document.getElementById('trangthai').value = row.trangthai || '';
-
+            const row = appData[index]; document.getElementById('editIndex').value = index; document.getElementById('modalTitle').innerText = 'Cập Nhật Thông Tin';
+            ['id','box','mst','ten_cty','khach','sdt','ngay','phi','ghichu','trangthai'].forEach(field => { document.getElementById(field).value = row[field] || ''; });
             formModal.show();
         }
 
         async function saveForm() {
-            if (!ghConfig.token) {
-                alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể lưu đồng bộ!');
-                return;
-            }
-
-            const mst = document.getElementById('mst').value.trim();
-            const ten_cty = document.getElementById('ten_cty').value.trim();
-
-            if(!mst || !ten_cty) {
-                alert('Vui lòng nhập Mã Số Thuế và Tên Công Ty!');
-                return;
-            }
-
-            const newData = {
-                id: document.getElementById('id').value,
-                box: document.getElementById('box').value,
-                mst: mst,
-                ten_cty: ten_cty,
-                khach: document.getElementById('khach').value,
-                sdt: document.getElementById('sdt').value,
-                ngay: document.getElementById('ngay').value,
-                phi: document.getElementById('phi').value,
-                ghichu: document.getElementById('ghichu').value,
-                trangthai: document.getElementById('trangthai').value
-            };
-
-            const editIndex = document.getElementById('editIndex').value;
-            let actionName = '';
-
-            if (editIndex == -1) {
-                appData.push(newData);
-                actionName = `Thêm mới MST: ${mst}`;
-            } else {
-                appData[editIndex] = newData;
-                actionName = `Cập nhật MST: ${mst}`;
-            }
-
-            formModal.hide();
-            renderTable();
-            await pushDataToGithub(actionName);
+            if (!ghConfig.token) { alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể lưu đồng bộ!'); return; }
+            const mst = document.getElementById('mst').value.trim(); const ten_cty = document.getElementById('ten_cty').value.trim();
+            if (!mst || !ten_cty) { alert('Vui lòng nhập Mã Số Thuế và Tên Công Ty!'); return; }
+            const newData = {}; ['id','box','khach','sdt','ngay','phi','ghichu','trangthai'].forEach(field => newData[field] = document.getElementById(field).value); newData.mst = mst; newData.ten_cty = ten_cty;
+            const editIndex = document.getElementById('editIndex').value; let actionName = '';
+            if (editIndex == -1) { appData.push(newData); actionName = `Thêm mới MST: ${mst}`; } else { appData[editIndex] = newData; actionName = `Cập nhật MST: ${mst}`; }
+            formModal.hide(); renderTable(); await pushDataToGithub(actionName);
         }
 
         async function deleteData(index) {
-            if (!ghConfig.token) {
-                alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể thực hiện thao tác này!');
-                return;
-            }
-
-            if (confirm('Bạn có chắc chắn muốn xóa dòng này? Sẽ xóa vĩnh viễn trên Cloud!')) {
-                const deletedMst = appData[index].mst;
-                appData.splice(index, 1);
-                renderTable();
-                await pushDataToGithub(`Xóa MST: ${deletedMst}`);
-            }
+            if (!ghConfig.token) { alert('Bạn phải cài đặt cấu hình GitHub thì mới có thể thực hiện thao tác này!'); return; }
+            if (confirm('Bạn có chắc chắn muốn xóa dòng này? Sẽ xóa vĩnh viễn trên Cloud!')) { const deletedMst = appData[index].mst; appData.splice(index, 1); renderTable(); await pushDataToGithub(`Xóa MST: ${deletedMst}`); }
         }
 
         function exportData() {
-            const dataStr = JSON.stringify(appData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `backup_tamngung_cloud_${new Date().getTime()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `backup_tamngung_cloud_${new Date().getTime()}.json`; a.click(); URL.revokeObjectURL(url);
         }
     </script>
 </body>
