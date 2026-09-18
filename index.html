@@ -42,9 +42,7 @@
         }
 
         .topbar {
-            position: sticky;
-            top: 12px;
-            z-index: 1000;
+            position: static;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -208,12 +206,20 @@
         }
 
         .table-headbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 8px 16px;
+            padding: 12px 12px 14px;
             gap: 12px;
             flex-wrap: wrap;
+            background: rgba(245, 247, 251, 0.96);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 16px 16px 0 0;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .table-title { display: flex; align-items: center; gap: 10px; font-size: 1.08rem; font-weight: 800; color: var(--secondary); }
@@ -235,7 +241,7 @@
             max-width: 100%;
             background: white;
             border: 1px solid rgba(148,163,184,0.18);
-            border-radius: 18px;
+            border-radius: 0 0 18px 18px;
             overflow-x: auto;
             overflow-y: visible;
             -webkit-overflow-scrolling: touch;
@@ -266,7 +272,7 @@
             padding: 14px 12px;
             border-bottom: none;
             position: sticky;
-            top: 0;
+            top: 58px;
             z-index: 2;
         }
 
@@ -335,6 +341,7 @@
             .toolbar .ms-auto { width: 100%; margin-left: 0 !important; }
             .content-panel { padding: 14px 10px 8px; }
             .table-container { border-radius: 14px; }
+            #dataTable thead th { top: 72px; }
         }
     </style>
 </head>
