@@ -89,17 +89,16 @@
     "trangthai": "Tạm ngưng 01/01/25-31/12/26"
   },
   {
-    "stt": "9",
     "id": "115",
     "box": "3",
     "mst": "0314610574",
     "ten_cty": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ LẠC KIÊN",
     "khach": "MrGiang",
     "sdt": "918842615",
-    "ngay": "",
+    "ngay": "20/09/2026",
     "phi": "",
-    "ghichu": "",
-    "trangthai": "Tạm ngưng 1/1/26-31/12/26"
+    "ghichu": "Token",
+    "trangthai": "Tạm ngưng 01/01/25-31/12/26 - 2 năm"
   },
   {
     "stt": "10",
