@@ -315,17 +315,16 @@
     "trangthai": "Tạm ngưng 01/01/25-31/12/26 - 2 năm"
   },
   {
-    "stt": "28",
     "id": "13",
     "box": "1",
     "mst": "0315105863",
+    "ten_cty": "CÔNG TY TNHH TRUYỀN HÌNH KVTV",
     "khach": "MrTrưởng",
     "sdt": "0919288168",
-    "ten_cty": "CÔNG TY TNHH TRUYỀN HÌNH KVTV",
-    "ngay": "2024-12-05",
+    "ngay": "20/09/2026",
     "phi": "",
-    "ghichu": "",
-    "trangthai": "Tạm ngưng 1/1/26-31/12/26"
+    "ghichu": "Token",
+    "trangthai": "Tạm ngưng 31/03/24-31/12/26 - 2,7 năm"
   },
   {
     "stt": "29",
