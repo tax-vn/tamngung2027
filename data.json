@@ -286,17 +286,16 @@
     "trangthai": "Tạm ngưng 01/01/24-31/12/26"
   },
   {
-    "stt": "25",
     "id": "164",
     "box": "2",
     "mst": "0317665525",
     "ten_cty": "CÔNG TY TNHH THIẾT BỊ ĐỨC THỊNH",
     "khach": "MrPhương",
     "sdt": "908537257",
-    "ngay": "2026-02-08",
-    "phi": "500",
-    "ghichu": "",
-    "trangthai": "Tạm ngưng 1/1/26-31/12/26"
+    "ngay": "20/09/2026",
+    "phi": "",
+    "ghichu": "Token",
+    "trangthai": "Tạm ngưng 01/01/24-31/12/26 - 3 năm"
   },
   {
     "stt": "26",
